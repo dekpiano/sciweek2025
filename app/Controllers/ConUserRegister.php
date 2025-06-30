@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-class Home extends BaseController
+class ConUserRegister extends BaseController
 {
     protected $db;
     public function __construct()
@@ -10,7 +10,7 @@ class Home extends BaseController
         $this->db = \Config\Database::connect();
     }
 
-    public function index()
+    public function index($key = null)
     {
         $Tb_compet = $this->db->table('tb_competition_types');
         $data['ListCompetition'] = $Tb_compet
@@ -19,6 +19,6 @@ class Home extends BaseController
         ->get()->getResult();
         //echo '<pre>';print_r($data); exit();
 
-        return view('User/Pages/Home',$data);
+        return view('User/Pages/Register/PagsRegister',$data);
     }
 }

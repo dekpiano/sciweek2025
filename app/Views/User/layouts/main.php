@@ -38,6 +38,7 @@
             font-family: 'K2D', sans-serif !important;
         }
     </style>
+    <?= $this->renderSection('css') ?>
 </head>
 
 <body>
@@ -163,6 +164,7 @@
 
     <!-- Template Javascript -->
     <script src="<?=base_url()?>public/js/main.js"></script>
+    <?= $this->renderSection('scripts') ?>
 </body>
 
 </html>

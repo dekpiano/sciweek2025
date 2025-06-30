@@ -46,7 +46,8 @@
                         <span ><?=$competition->ctype_detail?></span>
                         <div class="mt-4">
                             <a href="" class="btn-info btn"><i class="bi bi-file-earmark-fill"></i> รายละเอียด</a>
-                            <a target="_blank" href="<?=$competition->ctype_link_reg?>" class="btn-success btn"><i class="bi bi-pencil-square"></i> สมัครแข่งขัน</a>
+                            <!-- <a target="_blank" href="<?=$competition->ctype_link_reg?>" class="btn-success btn"><i class="bi bi-pencil-square"></i> สมัครแข่งขัน</a> -->
+                            <a target="_blank" href="<?=base_url('Register/'.$competition->ctype_keyname);?>" class="btn-success btn"><i class="bi bi-pencil-square"></i> สมัครแข่งขัน</a>
                         </div>
 
                     </div>
