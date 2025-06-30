@@ -7,12 +7,11 @@
 <div class="bg-primary hero-header">
     <div class="container">
         <div class="row g-5 align-items-center">
-            <div class="col-lg-6 text-center text-lg-start">
-                <h1 class="text-white mb-4 animated zoomIn" style="font-size: 3.7rem;">SCIENCE WEEK 2025</h1>
-                <h2 class="text-white pb-3 animated zoomIn">งานมหกรรมวันวิทยาศาสตร์ <br> “วิทย์ยุคใหม่ AI เปลี่ยนโลก”
+            <div class="col-lg-6 text-center text-center">
+                <h1 class="text-white text-center mb-4 animated zoomIn" style="font-size: 3.7rem;">SCIENCE WEEK 2025</h1>
+                <h2 class="text-white text-center pb-3 animated zoomIn">งานมหกรรมวันวิทยาศาสตร์ <br> “วิทย์ยุคใหม่ AI เปลี่ยนโลก” <br> 6 - 7 สิงหาคม 2568
                 </h2>
-                <a href="" class="btn btn-outline-light rounded-pill border-2 py-3 px-3 animated slideInRight">6 - 7
-                    สิงหาคม 2568</a>
+                <a href="#service" class="btn btn-outline-light rounded-pill border-2 py-3 px-3 animated slideInRight">รายการแข่งขัน</a>
                     <a target="_blank" href="https://maps.app.goo.gl/NPBV39wtktEs6nXX6" class="btn btn-light rounded-pill border-2 py-3 px-3 animated slideInRight"> <i class="bi bi-geo-alt-fill"></i> Google Map</a>
             </div>
             <div class="col-lg-6 text-center text-lg-start">
