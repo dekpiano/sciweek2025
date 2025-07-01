@@ -109,13 +109,13 @@
 </div>
 
 <div class="container">
-
-    <form id="registrationForm" novalidate>
-        <!-- ส่วนข้อมูลการแข่งขัน -->
-        <fieldset class="mb-4 p-3 border rounded-3">
-            <legend class="float-none w-auto px-2 fs-5">ข้อมูลการแข่งขัน</legend>
-            <div class="mb-3">
-                <div class="form-floating">
+       
+        <form id="registrationForm" novalidate>
+            <!-- ส่วนข้อมูลการแข่งขัน -->
+            <fieldset class="mb-4 p-3 border rounded-3">
+                <legend class="float-none w-auto px-2 fs-5">ข้อมูลการแข่งขัน</legend>
+                <div class="mb-3">
+                     <div class="form-floating">
                 <select class="form-select" id="competitionType" name="competitionType" required>
                     <option value="">เลือกประเภทการแข่งขัน</option>
                     <?php foreach ($DataCompetition as $key => $value): ?>
@@ -126,37 +126,97 @@
                 </select>
                 <label for="competitionType" class="form-label">ประเภทการแข่งขันที่สนใจ:</label>
                 </div>
-                <div class="invalid-feedback">กรุณาเลือกประเภทการแข่งขัน</div>
-            </div>
+                    <div class="invalid-feedback">กรุณาเลือกประเภทการแข่งขัน</div>
+                </div>
 
-            <div id="individualContestantInfo" class="form-group-hidden">
-                <h5 class="mt-4 mb-3">ข้อมูลผู้เข้าแข่งขัน (บุคคล)</h5>
+                <div id="individualContestantInfo" class="form-group-hidden">
+                    <h5 class="mt-4 mb-3">ข้อมูลผู้เข้าแข่งขัน (บุคคล)</h5>
+                    <div class="row g-3">
+                        <div class="col-md-2">
+                            <div class="form-floating">
+                                <select class="form-select" id="prefix" name="prefix">
+                                    <option value="">เลือก</option>
+                                    <option value="นาย">นาย</option>
+                                    <option value="นางสาว">นางสาว</option>
+                                    <option value="เด็กชาย">เด็กชาย</option>
+                                    <option value="เด็กหญิง">เด็กหญิง</option>
+                                </select>
+                                <label for="prefix">คำนำหน้า:</label>
+                            </div>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="firstName" name="firstName" placeholder="ชื่อจริง">
+                                <label for="firstName">ชื่อจริง:</label>
+                            </div>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="lastName" name="lastName" placeholder="นามสกุล">
+                                <label for="lastName">นามสกุล:</label>
+                            </div>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{10}" maxlength="10" placeholder="เบอร์โทรศัพท์">
+                                <label for="phone">เบอร์โทรศัพท์:</label>
+                            </div>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="teamNameSection" class="form-group-hidden">
+                    <h5 class="mt-4 mb-3">ข้อมูลทีม</h5>
+                    <div class="mb-3">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="teamName" name="teamName" placeholder="ชื่อทีม">
+                            <label for="teamName">ชื่อทีม:</label>
+                        </div>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                </div>
+
+                <div id="projectNameSection" class="form-group-hidden">
+                    <h5 class="mt-4 mb-3">ข้อมูลโครงงาน/สิ่งประดิษฐ์</h5>
+                    <div class="mb-3">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="projectName" name="projectName" placeholder="ชื่อโครงงาน/สิ่งประดิษฐ์">
+                            <label for="projectName">ชื่อโครงงาน/สิ่งประดิษฐ์:</label>
+                        </div>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                </div>
+
+                <div id="teamMembersSection" class="form-group-hidden">
+                    <h5 id="teamMembersTitle" class="mt-4 mb-3">สมาชิกในทีม</h5>
+                    <div id="teamMembersContainer">
+                        <!-- Team members will be added here by JavaScript -->
+                    </div>
+                    <button type="button" class="btn btn-outline-primary btn-sm hidden" id="addMemberBtn">เพิ่มสมาชิกในทีม</button>
+                </div>
+            </fieldset>
+
+            <!-- ส่วนข้อมูลการศึกษา/สังกัด -->
+            <fieldset class="mb-4 p-3 border rounded-3">
+                <legend class="float-none w-auto px-2 fs-5">ข้อมูลการศึกษา/สังกัด</legend>
                 <div class="row g-3">
-                    <div class="col-md-2">
+                    <div class="col-md-8">
                         <div class="form-floating">
-                            <select class="form-select" id="prefix" name="prefix">
-                                <option value="">เลือก</option>
-                                <option value="นาย">นาย</option>
-                                <option value="นางสาว">นางสาว</option>
-                                <option value="เด็กชาย">เด็กชาย</option>
-                                <option value="เด็กหญิง">เด็กหญิง</option>
-                            </select>
-                            <label for="prefix">คำนำหน้า:</label>
+                            <input type="text" class="form-control" id="schoolName" name="schoolName" placeholder="ชื่อโรงเรียน/สถาบัน" required>
+                            <label for="schoolName">ชื่อโรงเรียน/สถาบัน:</label>
                         </div>
                         <div class="invalid-feedback"></div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="firstName" name="firstName"
-                                placeholder="ชื่อจริง">
-                            <label for="firstName">ชื่อจริง:</label>
-                        </div>
-                        <div class="invalid-feedback"></div>
-                    </div>
-                    <div class="col-md-5">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="นามสกุล">
-                            <label for="lastName">นามสกุล:</label>
+                            <input type="text" class="form-control" id="schoolProvince" name="schoolProvince" placeholder="จังหวัด" required>
+                            <label for="schoolProvince">จังหวัด:</label>
                         </div>
                         <div class="invalid-feedback"></div>
                     </div>
@@ -164,135 +224,65 @@
                 <div class="row g-3 mt-2">
                     <div class="col-md-12">
                         <div class="form-floating">
-                            <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{10}"
-                                maxlength="10" placeholder="เบอร์โทรศัพท์">
-                            <label for="phone">เบอร์โทรศัพท์:</label>
+                            <select class="form-select" id="educationLevel" name="educationLevel" required>
+                                <option value="">เลือก</option>
+                                <option value="ประถมศึกษาตอนต้น">ประถมศึกษาตอนต้น</option>
+                                <option value="ประถมศึกษาตอนปลาย">ประถมศึกษาตอนปลาย</option>
+                                <option value="มัธยมศึกษาตอนต้น">มัธยมศึกษาตอนต้น</option>
+                                <option value="มัธยมศึกษาตอนปลาย">มัธยมศึกษาตอนปลาย</option>
+                                <option value="ประกาศนียบัตรวิชาชีพ (ปวช.)">ประกาศนียบัตรวิชาชีพ (ปวช.)</option>
+                            </select>
+                            <label for="educationLevel">ระดับชั้น/ระดับการศึกษา:</label>
                         </div>
                         <div class="invalid-feedback"></div>
                     </div>
                 </div>
-            </div>
+            </fieldset>
 
-            <div id="teamNameSection" class="form-group-hidden">
-                <h5 class="mt-4 mb-3">ข้อมูลทีม</h5>
-                <div class="mb-3">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="teamName" name="teamName" placeholder="ชื่อทีม">
-                        <label for="teamName">ชื่อทีม:</label>
-                    </div>
-                    <div class="invalid-feedback"></div>
-                </div>
-            </div>
-
-            <div id="projectNameSection" class="form-group-hidden">
-                <h5 class="mt-4 mb-3">ข้อมูลโครงงาน/สิ่งประดิษฐ์</h5>
-                <div class="mb-3">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="projectName" name="projectName"
-                            placeholder="ชื่อโครงงาน/สิ่งประดิษฐ์">
-                        <label for="projectName">ชื่อโครงงาน/สิ่งประดิษฐ์:</label>
-                    </div>
-                    <div class="invalid-feedback"></div>
-                </div>
-            </div>
-
-            <div id="teamMembersSection" class="form-group-hidden">
-                <h5 id="teamMembersTitle" class="mt-4 mb-3">สมาชิกในทีม</h5>
-                <div id="teamMembersContainer">
-                    <!-- Team members will be added here by JavaScript -->
-                </div>
-                <button type="button" class="btn btn-outline-primary btn-sm hidden"
-                    id="addMemberBtn">เพิ่มสมาชิกในทีม</button>
-            </div>
-        </fieldset>
-
-        <!-- ส่วนข้อมูลการศึกษา/สังกัด -->
-        <fieldset class="mb-4 p-3 border rounded-3">
-            <legend class="float-none w-auto px-2 fs-5">ข้อมูลการศึกษา/สังกัด</legend>
-            <div class="row g-3">
-                <div class="col-md-8">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="schoolName" name="schoolName"
-                            placeholder="ชื่อโรงเรียน/สถาบัน" required>
-                        <label for="schoolName">ชื่อโรงเรียน/สถาบัน:</label>
-                    </div>
-                    <div class="invalid-feedback"></div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="schoolProvince" name="schoolProvince"
-                            placeholder="จังหวัด" required>
-                        <label for="schoolProvince">จังหวัด:</label>
-                    </div>
-                    <div class="invalid-feedback"></div>
-                </div>
-            </div>
-            <div class="row g-3 mt-2">
-                <div class="col-md-12">
-                    <div class="form-floating">
-                        <select class="form-select" id="educationLevel" name="educationLevel" required>
-                            <option value="">เลือก</option>
-                            <option value="ประถมศึกษาตอนต้น">ประถมศึกษาตอนต้น</option>
-                            <option value="ประถมศึกษาตอนปลาย">ประถมศึกษาตอนปลาย</option>
-                            <option value="มัธยมศึกษาตอนต้น">มัธยมศึกษาตอนต้น</option>
-                            <option value="มัธยมศึกษาตอนปลาย">มัธยมศึกษาตอนปลาย</option>
-                            <option value="ประกาศนียบัตรวิชาชีพ (ปวช.)">ประกาศนียบัตรวิชาชีพ (ปวช.)</option>
-                        </select>
-                        <label for="educationLevel">ระดับชั้น/ระดับการศึกษา:</label>
-                    </div>
-                    <div class="invalid-feedback"></div>
-                </div>
-            </div>
-        </fieldset>
-
-        <!-- ส่วนข้อมูลอาจารย์ที่ปรึกษา -->
-        <fieldset class="mb-4 p-3 border rounded-3">
-            <legend class="float-none w-auto px-2 fs-5">ข้อมูลอาจารย์ที่ปรึกษา</legend>
-            <div id="advisorsContainer">
-                <!-- Advisor 1 - Always visible and required -->
-                <div class="card-advisor">
-                    <button type="button" class="remove-btn hidden" data-type="advisor" data-id="1">&times;</button>
-                    <h6>อาจารย์ที่ปรึกษาคนที่ 1</h6>
-                    <div class="row g-2">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="advisorName1" name="advisors[1][name]"
-                                    placeholder="ชื่อ-นามสกุล" required>
-                                <label for="advisorName1">ชื่อ-นามสกุล:</label>
+            <!-- ส่วนข้อมูลอาจารย์ที่ปรึกษา -->
+            <fieldset class="mb-4 p-3 border rounded-3">
+                <legend class="float-none w-auto px-2 fs-5">ข้อมูลอาจารย์ที่ปรึกษา</legend>
+                <div id="advisorsContainer">
+                    <!-- Advisor 1 - Always visible and required -->
+                    <div class="card-advisor">
+                        <button type="button" class="remove-btn hidden" data-type="advisor" data-id="1">&times;</button>
+                        <h6>อาจารย์ที่ปรึกษาคนที่ 1</h6>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="advisorName1" name="advisors[1][name]" placeholder="ชื่อ-นามสกุล" required>
+                                    <label for="advisorName1">ชื่อ-นามสกุล:</label>
+                                </div>
+                                <div class="invalid-feedback"></div>
                             </div>
-                            <div class="invalid-feedback"></div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="tel" class="form-control" id="advisorPhone1" name="advisors[1][phone]" pattern="[0-9]{10}" maxlength="10" placeholder="เบอร์โทรศัพท์" required>
+                                    <label for="advisorPhone1">เบอร์โทรศัพท์:</label>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="tel" class="form-control" id="advisorPhone1" name="advisors[1][phone]"
-                                    pattern="[0-9]{10}" maxlength="10" placeholder="เบอร์โทรศัพท์" required>
-                                <label for="advisorPhone1">เบอร์โทรศัพท์:</label>
+                        <div class="row g-2">
+                            <div class="col-md-12">
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control" id="advisorEmail1" name="advisors[1][email]" placeholder="อีเมล" required>
+                                    <label for="advisorEmail1">อีเมล:</label>
+                                </div>
+                                <div class="invalid-feedback"></div>
                             </div>
-                            <div class="invalid-feedback"></div>
                         </div>
                     </div>
-                    <div class="row g-2">
-                        <div class="col-md-12">
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="advisorEmail1" name="advisors[1][email]"
-                                    placeholder="อีเมล" required>
-                                <label for="advisorEmail1">อีเมล:</label>
-                            </div>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                    </div>
+                    <!-- End Advisor 1 -->
                 </div>
-                <!-- End Advisor 1 -->
+                <button type="button" class="btn btn-outline-success btn-sm mt-2" id="addAdvisorBtn">เพิ่มอาจารย์ที่ปรึกษา</button>
+            </fieldset>
+            
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">ส่งข้อมูลการสมัคร</button>
             </div>
-            <button type="button" class="btn btn-outline-success btn-sm mt-2"
-                id="addAdvisorBtn">เพิ่มอาจารย์ที่ปรึกษา</button>
-        </fieldset>
-
-        <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-primary btn-lg">ส่งข้อมูลการสมัคร</button>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 
 
 
@@ -303,218 +293,213 @@
 <?= $this->section('scripts') ?>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Get form and sections
-    const form = document.getElementById('registrationForm');
-    const competitionTypeSelect = document.getElementById('competitionType');
-    const individualContestantInfo = document.getElementById('individualContestantInfo');
-    const teamNameSection = document.getElementById('teamNameSection');
-    const projectNameSection = document.getElementById('projectNameSection');
-    const teamMembersSection = document.getElementById('teamMembersSection');
-    const teamMembersContainer = document.getElementById('teamMembersContainer');
-    const teamMembersTitle = document.getElementById('teamMembersTitle');
-    const addMemberBtn = document.getElementById('addMemberBtn');
-    const advisorsContainer = document.getElementById('advisorsContainer');
-    const addAdvisorBtn = document.getElementById('addAdvisorBtn');
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get form and sections
+            const form = document.getElementById('registrationForm');
+            const competitionTypeSelect = document.getElementById('competitionType');
+            const individualContestantInfo = document.getElementById('individualContestantInfo');
+            const teamNameSection = document.getElementById('teamNameSection');
+            const projectNameSection = document.getElementById('projectNameSection');
+            const teamMembersSection = document.getElementById('teamMembersSection');
+            const teamMembersContainer = document.getElementById('teamMembersContainer');
+            const teamMembersTitle = document.getElementById('teamMembersTitle');
+            const addMemberBtn = document.getElementById('addMemberBtn');
+            const advisorsContainer = document.getElementById('advisorsContainer');
+            const addAdvisorBtn = document.getElementById('addAdvisorBtn');
 
-    let memberCount = 0; // To keep track of current team members displayed
-    let advisorCount = 1; // Start at 1 because the first advisor is pre-populated in HTML
+            let memberCount = 0; // To keep track of current team members displayed
+            let advisorCount = 1; // Start at 1 because the first advisor is pre-populated in HTML
 
-    const competitionDetails = {
-        "waterbottlerocket": {
-            isTeam: true,
-            minMembers: 3,
-            maxMembers: 3,
-            needsProject: false
-        },
-        "scientificdrawings": {
-            isTeam: true,
-            minMembers: 2,
-            maxMembers: 2,
-            needsProject: false
-        },
-        "Innovativecostumedesign": {
-            isTeam: true,
-            minMembers: 1,
-            maxMembers: 1,
-            needsProject: true
-        },
-        "ScienceCoverDance": {
-            isTeam: true,
-            minMembers: 5,
-            maxMembers: 10,
-            needsProject: false
-        },
-        "SpeedyQuiz": {
-            isTeam: true,
-            minMembers: 3,
-            maxMembers: 3,
-            needsProject: false
-        },
-        "ROV": {
-            isTeam: true,
-            minMembers: 5,
-            maxMembers: 7,
-            needsProject: false
-        },
-        "LineTracing": {
-            isTeam: true,
-            minMembers: 1,
-            maxMembers: 1,
-            needsProject: false
-        },
-        "GAME24": {
-            isTeam: true,
-            minMembers: 1,
-            maxMembers: 1,
-            needsProject: false
-        },
-        "Rubik": {
-            isTeam: true,
-            minMembers: 1,
-            maxMembers: 1,
-            needsProject: false
-        },
-    };
+            const competitionDetails = {
+                "waterbottlerocket": {
+                    isTeam: true,
+                    minMembers: 3,
+                    maxMembers: 3,
+                    needsProject: false
+                },
+                "scientificdrawings": {
+                    isTeam: true,
+                    minMembers: 2,
+                    maxMembers: 2,
+                    needsProject: false
+                },
+                "Innovativecostumedesign": {
+                    isTeam: false,
+                    minMembers: 1,
+                    maxMembers: 1,
+                    needsProject: true
+                },
+                "ScienceCoverDance": {
+                    isTeam: true,
+                    minMembers: 5,
+                    maxMembers: 10,
+                    needsProject: false
+                },
+                "SpeedyQuiz": {
+                    isTeam: true,
+                    minMembers: 3,
+                    maxMembers: 3,
+                    needsProject: false
+                },
+                "ROV": {
+                    isTeam: true,
+                    minMembers: 5,
+                    maxMembers: 7,
+                    needsProject: false
+                },
+                "LineTracing": {
+                    isTeam: true,
+                    minMembers: 1,
+                    maxMembers: 1,
+                    needsProject: false
+                },
+                "GAME24": {
+                    isTeam: true,
+                    minMembers: 1,
+                    maxMembers: 1,
+                    needsProject: false
+                },
+                "Rubik": {
+                    isTeam: true,
+                    minMembers: 1,
+                    maxMembers: 1,
+                    needsProject: false
+                },
+            };
 
-    // --- Functions for dynamic form sections ---
-    function toggleCompetitionFields() {
-        const selectedValue = competitionTypeSelect.value;
-        const details = competitionDetails[selectedValue];
-        //console.log(selectedValue);
+            // --- Functions for dynamic form sections ---
+            function toggleCompetitionFields() {
+                const selectedValue = competitionTypeSelect.value;
+                const details = competitionDetails[selectedValue];
+                console.log(selectedValue);
 
-        // Reset display for all conditional sections and their required attributes
-        const allConditionalSections = [
-            individualContestantInfo,
-            teamNameSection,
-            projectNameSection,
-            teamMembersSection
-        ];
+                // Reset display for all conditional sections and their required attributes
+                const allConditionalSections = [
+                    individualContestantInfo,
+                    teamNameSection,
+                    projectNameSection,
+                    teamMembersSection
+                ];
 
-        allConditionalSections.forEach(section => {
-            section.classList.add('form-group-hidden');
-            section.querySelectorAll('input, select').forEach(input => {
-                input.removeAttribute('required');
-                input.classList.remove('is-invalid', 'is-valid'); // Clear validation states
-                let feedbackDiv = input.closest('.form-floating')?.nextElementSibling || input
-                    .nextElementSibling;
-                if (feedbackDiv && feedbackDiv.classList.contains('invalid-feedback')) {
-                    feedbackDiv.textContent = ''; // Clear feedback text
-                }
-            });
-        });
-
-        // Clear previous team members
-        teamMembersContainer.innerHTML = '';
-        memberCount = 0; // Reset member count
-        updateAddMemberButtonVisibility(); // Hide button initially
-
-        if (details) {
-            if (!details.isTeam) { // Individual competition
-                individualContestantInfo.classList.remove('form-group-hidden');
-                // Add 'required' attribute to inputs within this section
-                individualContestantInfo.querySelectorAll('input, select').forEach(input => {
-                    input.setAttribute('required', 'required');
-                    setupValidationListener(input); // Setup real-time validation
+                allConditionalSections.forEach(section => {
+                    section.classList.add('form-group-hidden');
+                    section.querySelectorAll('input, select').forEach(input => {
+                        input.removeAttribute('required');
+                        input.classList.remove('is-invalid', 'is-valid'); // Clear validation states
+                        let feedbackDiv = input.closest('.form-floating')?.nextElementSibling || input.nextElementSibling;
+                        if (feedbackDiv && feedbackDiv.classList.contains('invalid-feedback')) {
+                            feedbackDiv.textContent = ''; // Clear feedback text
+                        }
+                    });
                 });
-                if (details.needsProject) {
-                    projectNameSection.classList.remove('form-group-hidden');
-                    document.getElementById('projectName').setAttribute('required', 'required');
-                    setupValidationListener(document.getElementById('projectName'));
-                }
-            } else { // Team competition
-                teamNameSection.classList.remove('form-group-hidden');
-                document.getElementById('teamName').setAttribute('required', 'required');
-                setupValidationListener(document.getElementById('teamName'));
 
-                if (details.needsProject) {
-                    projectNameSection.classList.remove('form-group-hidden');
-                    document.getElementById('projectName').setAttribute('required', 'required');
-                    setupValidationListener(document.getElementById('projectName'));
-                }
+                // Clear previous team members
+                teamMembersContainer.innerHTML = '';
+                memberCount = 0; // Reset member count
+                updateAddMemberButtonVisibility(); // Hide button initially
 
-                teamMembersSection.classList.remove('form-group-hidden');
-                if (details.minMembers === details.maxMembers) {
-                    teamMembersTitle.textContent = `สมาชิกในทีม (รวม ${details.maxMembers} คน)`;
-                } else {
-                    teamMembersTitle.textContent =
-                        `สมาชิกในทีม (อย่างน้อย ${details.minMembers} คน, สูงสุด ${details.maxMembers} คน)`;
-                }
+                if (details) {
+                    if (!details.isTeam) { // Individual competition
+                        individualContestantInfo.classList.remove('form-group-hidden');
+                        // Add 'required' attribute to inputs within this section
+                        individualContestantInfo.querySelectorAll('input, select').forEach(input => {
+                            input.setAttribute('required', 'required');
+                            setupValidationListener(input); // Setup real-time validation
+                        });
+                        if (details.needsProject) {
+                            projectNameSection.classList.remove('form-group-hidden');
+                            document.getElementById('projectName').setAttribute('required', 'required');
+                            setupValidationListener(document.getElementById('projectName'));
+                        }
+                    } else { // Team competition
+                        teamNameSection.classList.remove('form-group-hidden');
+                        document.getElementById('teamName').setAttribute('required', 'required');
+                        setupValidationListener(document.getElementById('teamName'));
 
-                // Pre-populate minimum required member fields
-                for (let i = 0; i < details.minMembers; i++) {
-                    addTeamMemberField(true); // true indicates initial setup, doesn't show Swal
-                }
-                updateAddMemberButtonVisibility(); // Update button visibility after pre-populating
-            }
-        }
-    }
+                        if (details.needsProject) {
+                            projectNameSection.classList.remove('form-group-hidden');
+                            document.getElementById('projectName').setAttribute('required', 'required');
+                            setupValidationListener(document.getElementById('projectName'));
+                        }
 
-    function setupValidationListener(inputElement) {
-        inputElement.addEventListener('input', function() {
-            // Clear previous states
-            this.classList.remove('is-invalid', 'is-valid');
-            let feedbackDiv = this.closest('.form-floating')?.nextElementSibling || this
-                .nextElementSibling;
-            if (feedbackDiv && feedbackDiv.classList.contains('invalid-feedback')) {
-                feedbackDiv.textContent = '';
-            }
+                        teamMembersSection.classList.remove('form-group-hidden');
+                        if (details.minMembers === details.maxMembers) {
+                            teamMembersTitle.textContent = `สมาชิกในทีม (รวม ${details.maxMembers} คน)`;
+                        } else {
+                            teamMembersTitle.textContent =
+                                `สมาชิกในทีม (อย่างน้อย ${details.minMembers} คน, สูงสุด ${details.maxMembers} คน)`;
+                        }
 
-            // Only validate if not empty or if it's a select with a value
-            if (this.value.trim() === '' && this.hasAttribute('required')) {
-                this.classList.add('is-invalid');
-                if (feedbackDiv) {
-                    let labelText = this.labels[0] ? this.labels[0].textContent.replace(':', '')
-                        .trim() : this.name;
-                    feedbackDiv.textContent = `โปรดกรอกฟิลด์: ${labelText}`;
-                }
-            } else if (!this.checkValidity()) {
-                this.classList.add('is-invalid');
-                if (feedbackDiv) {
-                    if ((this.name === 'phone' || (this.name && this.name.includes('teamMembers') &&
-                            this.name.includes('phone'))) && this.value.length !== 10) {
-                        feedbackDiv.textContent = 'กรุณากรอกเบอร์โทรศัพท์ 10 หลัก';
-                    } else if (this.type === 'email' && !this.value.includes('@')) {
-                        feedbackDiv.textContent = 'กรุณากรอกอีเมลที่ถูกต้อง';
-                    } else {
-                        // Fallback for other invalid states
-                        feedbackDiv.textContent =
-                            `ข้อมูลไม่ถูกต้องสำหรับฟิลด์: ${this.labels[0] ? this.labels[0].textContent.replace(':', '').trim() : this.name}`;
+                        // Pre-populate minimum required member fields
+                        for (let i = 0; i < details.minMembers; i++) {
+                            addTeamMemberField(true); // true indicates initial setup, doesn't show Swal
+                        }
+                        updateAddMemberButtonVisibility(); // Update button visibility after pre-populating
                     }
                 }
-            } else {
-                this.classList.add('is-valid');
             }
-        });
-    }
+
+            function setupValidationListener(inputElement) {
+                inputElement.addEventListener('input', function() {
+                    // Clear previous states
+                    this.classList.remove('is-invalid', 'is-valid');
+                    let feedbackDiv = this.closest('.form-floating')?.nextElementSibling || this.nextElementSibling;
+                    if (feedbackDiv && feedbackDiv.classList.contains('invalid-feedback')) {
+                        feedbackDiv.textContent = '';
+                    }
+
+                    // Only validate if not empty or if it's a select with a value
+                    if (this.value.trim() === '' && this.hasAttribute('required')) {
+                        this.classList.add('is-invalid');
+                        if (feedbackDiv) {
+                            let labelText = this.labels[0] ? this.labels[0].textContent.replace(':', '').trim() : this.name;
+                            feedbackDiv.textContent = `โปรดกรอกฟิลด์: ${labelText}`;
+                        }
+                    } else if (!this.checkValidity()) {
+                        this.classList.add('is-invalid');
+                        if (feedbackDiv) {
+                            if ((this.name === 'phone' || (this.name && this.name.includes('teamMembers') && this.name.includes('phone'))) && this.value.length !== 10) {
+                                feedbackDiv.textContent = 'กรุณากรอกเบอร์โทรศัพท์ 10 หลัก';
+                            } else if (this.type === 'email' && !this.value.includes('@')) {
+                                feedbackDiv.textContent = 'กรุณากรอกอีเมลที่ถูกต้อง';
+                            } else {
+                                // Fallback for other invalid states
+                                feedbackDiv.textContent = `ข้อมูลไม่ถูกต้องสำหรับฟิลด์: ${this.labels[0] ? this.labels[0].textContent.replace(':', '').trim() : this.name}`;
+                            }
+                        }
+                    } else {
+                        this.classList.add('is-valid');
+                    }
+                });
+            }
 
 
-    function addTeamMemberField(isInitialSetup = false) {
-        const selectedValue = competitionTypeSelect.value;
-        const details = competitionDetails[selectedValue];
-        const maxAllowedMembers = details ? details.maxMembers : 0;
+            function addTeamMemberField(isInitialSetup = false) {
+                const selectedValue = competitionTypeSelect.value;
+                const details = competitionDetails[selectedValue];
+                const maxAllowedMembers = details ? details.maxMembers : 0;
 
-        if (!isInitialSetup && memberCount >= maxAllowedMembers) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'ไม่สามารถเพิ่มได้!',
-                text: `สำหรับประเภทนี้ สามารถมีสมาชิกในทีมได้สูงสุด ${maxAllowedMembers} คน (รวมหัวหน้าทีม)`,
-                showConfirmButton: true
-            });
-            return;
-        }
+                if (!isInitialSetup && memberCount >= maxAllowedMembers) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'ไม่สามารถเพิ่มได้!',
+                        text: `สำหรับประเภทนี้ สามารถมีสมาชิกในทีมได้สูงสุด ${maxAllowedMembers} คน (รวมหัวหน้าทีม)`,
+                        showConfirmButton: true
+                    });
+                    return;
+                }
 
-        memberCount++; // Increment current count of members displayed
-        const memberDiv = document.createElement('div');
-        memberDiv.classList.add('card-team-member');
+                memberCount++; // Increment current count of members displayed
+                const memberDiv = document.createElement('div');
+                memberDiv.classList.add('card-team-member');
 
-        // Determine title for each member field
-        let memberTitle = `สมาชิกคนที่ ${memberCount}`;
-        if (memberCount === 1) {
-            memberTitle = `สมาชิกคนที่ 1 (หัวหน้าทีม)`;
-        }
+                // Determine title for each member field
+                let memberTitle = `สมาชิกคนที่ ${memberCount}`;
+                if (memberCount === 1) {
+                    memberTitle = `สมาชิกคนที่ 1 (หัวหน้าทีม)`;
+                }
 
-        memberDiv.innerHTML = `
+                memberDiv.innerHTML = `
                     <button type="button" class="remove-btn" data-type="member" data-id="${memberCount}">&times;</button>
                     <h6>${memberTitle}</h6>
                     <div class="row g-2">
@@ -556,72 +541,72 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                 `;
-        teamMembersContainer.appendChild(memberDiv);
+                teamMembersContainer.appendChild(memberDiv);
 
-        // Add event listener for remove button
-        memberDiv.querySelector('.remove-btn').addEventListener('click', function() {
-            memberDiv.remove();
-            memberCount--; // Decrement count when removed
-            updateAddMemberButtonVisibility(); // Update button visibility
-            // Re-index displayed member numbers and names for visual consistency
-            updateTeamMemberDisplayIndices();
-        });
+                // Add event listener for remove button
+                memberDiv.querySelector('.remove-btn').addEventListener('click', function() {
+                    memberDiv.remove();
+                    memberCount--; // Decrement count when removed
+                    updateAddMemberButtonVisibility(); // Update button visibility
+                    // Re-index displayed member numbers and names for visual consistency
+                    updateTeamMemberDisplayIndices();
+                });
 
-        // Setup validation listeners for new inputs
-        memberDiv.querySelectorAll('input, select').forEach(input => {
-            setupValidationListener(input);
-        });
+                // Setup validation listeners for new inputs
+                memberDiv.querySelectorAll('input, select').forEach(input => {
+                    setupValidationListener(input);
+                });
 
-        updateAddMemberButtonVisibility(); // Update button visibility after adding
-    }
-
-    function updateTeamMemberDisplayIndices() {
-        const memberCards = teamMembersContainer.querySelectorAll('.card-team-member');
-        memberCount = 0; // Reset count to re-index
-        memberCards.forEach((card, index) => {
-            memberCount++;
-            const titleElement = card.querySelector('h6');
-            let newTitle = `สมาชิกคนที่ ${memberCount}`;
-            if (memberCount === 1 && competitionDetails[competitionTypeSelect.value]
-                .isTeam) { // Only label as leader if it's a team and first member
-                newTitle = `สมาชิกคนที่ 1 (หัวหน้าทีม)`;
+                updateAddMemberButtonVisibility(); // Update button visibility after adding
             }
-            if (titleElement) {
-                titleElement.textContent = newTitle;
-            }
-            // Update names for backend processing (optional, but good practice if indices matter)
-            card.querySelectorAll('input, select').forEach(input => {
-                const originalName = input.name;
-                if (originalName && originalName.startsWith('teamMembers')) {
-                    const prop = originalName.match(/\[\d+\]\[(\w+)\]/)[1];
-                    input.name = `teamMembers[${memberCount}][${prop}]`;
-                    input.id = `member${prop}${memberCount}`;
-                    // The label's 'for' attribute should also be updated
-                    const labelForInput = card.querySelector(`label[for^="member${prop}"]`);
-                    if (labelForInput) {
-                        labelForInput.setAttribute('for', `member${prop}${memberCount}`);
+
+            function updateTeamMemberDisplayIndices() {
+                const memberCards = teamMembersContainer.querySelectorAll('.card-team-member');
+                memberCount = 0; // Reset count to re-index
+                memberCards.forEach((card, index) => {
+                    memberCount++;
+                    const titleElement = card.querySelector('h6');
+                    let newTitle = `สมาชิกคนที่ ${memberCount}`;
+                    if (memberCount === 1 && competitionDetails[competitionTypeSelect.value]
+                        .isTeam) { // Only label as leader if it's a team and first member
+                        newTitle = `สมาชิกคนที่ 1 (หัวหน้าทีม)`;
                     }
+                    if (titleElement) {
+                        titleElement.textContent = newTitle;
+                    }
+                    // Update names for backend processing (optional, but good practice if indices matter)
+                    card.querySelectorAll('input, select').forEach(input => {
+                        const originalName = input.name;
+                        if (originalName && originalName.startsWith('teamMembers')) {
+                            const prop = originalName.match(/\[\d+\]\[(\w+)\]/)[1];
+                            input.name = `teamMembers[${memberCount}][${prop}]`;
+                            input.id = `member${prop}${memberCount}`;
+                            // The label's 'for' attribute should also be updated
+                            const labelForInput = card.querySelector(`label[for^="member${prop}"]`);
+                            if (labelForInput) {
+                                labelForInput.setAttribute('for', `member${prop}${memberCount}`);
+                            }
+                        }
+                    });
+                });
+            }
+
+
+            function addAdvisorField() {
+                if (advisorCount >= 2) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'ไม่สามารถเพิ่มได้!',
+                        text: 'สามารถเพิ่มอาจารย์ที่ปรึกษาได้สูงสุด 2 ท่านเท่านั้น',
+                        showConfirmButton: true
+                    });
+                    return;
                 }
-            });
-        });
-    }
 
-
-    function addAdvisorField() {
-        if (advisorCount >= 2) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'ไม่สามารถเพิ่มได้!',
-                text: 'สามารถเพิ่มอาจารย์ที่ปรึกษาได้สูงสุด 2 ท่านเท่านั้น',
-                showConfirmButton: true
-            });
-            return;
-        }
-
-        advisorCount++;
-        const advisorDiv = document.createElement('div');
-        advisorDiv.classList.add('card-advisor');
-        advisorDiv.innerHTML = `
+                advisorCount++;
+                const advisorDiv = document.createElement('div');
+                advisorDiv.classList.add('card-advisor');
+                advisorDiv.innerHTML = `
                     <button type="button" class="remove-btn" data-type="advisor" data-id="${advisorCount}">&times;</button>
                     <h6>อาจารย์ที่ปรึกษาคนที่ ${advisorCount}</h6>
                     <div class="row g-2">
@@ -650,218 +635,205 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                 `;
-        advisorsContainer.appendChild(advisorDiv);
+                advisorsContainer.appendChild(advisorDiv);
 
-        // Add event listener for remove button
-        advisorDiv.querySelector('.remove-btn').addEventListener('click', function() {
-            advisorDiv.remove();
-            advisorCount--; // Decrement count when removed
-            // Re-index advisors for display if desired, though not strictly necessary for data submission
-        });
+                // Add event listener for remove button
+                advisorDiv.querySelector('.remove-btn').addEventListener('click', function() {
+                    advisorDiv.remove();
+                    advisorCount--; // Decrement count when removed
+                    // Re-index advisors for display if desired, though not strictly necessary for data submission
+                });
 
-        // Setup validation listeners for new inputs
-        advisorDiv.querySelectorAll('input, select').forEach(input => {
-            setupValidationListener(input);
-        });
-    }
-
-    function updateAddMemberButtonVisibility() {
-        const selectedValue = competitionTypeSelect.value;
-        const details = competitionDetails[selectedValue];
-        if (details && details.isTeam) {
-            if (memberCount >= details.maxMembers) {
-                addMemberBtn.classList.add('hidden');
-            } else {
-                addMemberBtn.classList.remove('hidden');
+                // Setup validation listeners for new inputs
+                advisorDiv.querySelectorAll('input, select').forEach(input => {
+                    setupValidationListener(input);
+                });
             }
-        } else {
-            addMemberBtn.classList.add('hidden');
-        }
-    }
 
-    // --- Event Listeners ---
-    competitionTypeSelect.addEventListener('change', toggleCompetitionFields);
-    addMemberBtn.addEventListener('click', addTeamMemberField);
-    addAdvisorBtn.addEventListener('click', addAdvisorField);
-
-    // Trigger on initial load in case of pre-filled values (e.g., from server-side rendering or refresh)
-    toggleCompetitionFields();
-    // Setup validation listener for the competitionTypeSelect itself
-    setupValidationListener(competitionTypeSelect);
-    // Setup validation listeners for the pre-existing first advisor field
-    document.querySelectorAll('#advisorsContainer .card-advisor input, #advisorsContainer .card-advisor select')
-        .forEach(input => {
-            setupValidationListener(input);
-        });
-
-    // Setup validation listeners for the "ข้อมูลการศึกษา/สังกัด" section
-    document.getElementById('schoolName').setAttribute('required', 'required');
-    setupValidationListener(document.getElementById('schoolName'));
-    document.getElementById('schoolProvince').setAttribute('required', 'required');
-    setupValidationListener(document.getElementById('schoolProvince'));
-    document.getElementById('educationLevel').setAttribute('required', 'required');
-    setupValidationListener(document.getElementById('educationLevel'));
-
-
-    // --- Form Submission and Validation ---
-    form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission
-        event.stopPropagation();
-
-        let isValid = true;
-        // Select all required inputs/selects that are currently visible
-        const formElements = form.querySelectorAll(
-            '[required]:not(.form-group-hidden input, .form-group-hidden select)'
-        );
-
-        // Clear previous validation messages and invalid states for all inputs
-        form.querySelectorAll('.form-control, .form-select').forEach(input => {
-            input.classList.remove('is-invalid', 'is-valid');
-            let feedbackDiv = input.closest('.form-floating')?.nextElementSibling || input
-                .nextElementSibling;
-            if (feedbackDiv && feedbackDiv.classList.contains('invalid-feedback')) {
-                feedbackDiv.textContent = '';
-            }
-        });
-
-
-        // Client-side validation loop for visible required fields
-        formElements.forEach(input => {
-            if (!input.checkValidity()) {
-                input.classList.add('is-invalid');
-                // Find the next sibling that is an invalid-feedback div
-                let feedbackDiv = input.closest('.form-floating')?.nextElementSibling || input
-                    .nextElementSibling;
-
-                if (feedbackDiv && feedbackDiv.classList.contains('invalid-feedback')) {
-                    if ((input.name === 'phone' || (input.name && input.name.includes(
-                            'teamMembers') && input.name.includes('phone'))) && input.value
-                        .length !== 10) {
-                        feedbackDiv.textContent = 'กรุณากรอกเบอร์โทรศัพท์ 10 หลัก';
-                    } else if (input.type === 'email' && !input.value.includes('@')) {
-                        feedbackDiv.textContent = 'กรุณากรอกอีเมลที่ถูกต้อง';
+            function updateAddMemberButtonVisibility() {
+                const selectedValue = competitionTypeSelect.value;
+                const details = competitionDetails[selectedValue];
+                if (details && details.isTeam) {
+                    if (memberCount >= details.maxMembers) {
+                        addMemberBtn.classList.add('hidden');
                     } else {
-                        // Get the label text for a user-friendly message
-                        let labelText = input.labels[0] ? input.labels[0].textContent.replace(
-                            ':', '').trim() : input.name;
-                        feedbackDiv.textContent = `โปรดกรอกฟิลด์: ${labelText}`;
-                    }
-                }
-                isValid = false;
-            } else {
-                input.classList.add('is-valid'); // Add is-valid class when valid
-            }
-        });
-
-        // Additional check for exact number of team members for team competitions
-        const selectedCompetitionType = competitionTypeSelect.value;
-        const details = competitionDetails[selectedCompetitionType];
-        if (details && details.isTeam && (memberCount < details.minMembers || memberCount > details
-                .maxMembers)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'ข้อมูลสมาชิกทีมไม่ถูกต้อง',
-                text: `การแข่งขันประเภทนี้ต้องมีสมาชิกในทีมอย่างน้อย ${details.minMembers} คน และไม่เกิน ${details.maxMembers} คน`,
-                showConfirmButton: true
-            });
-            isValid = false;
-        }
-
-        if (isValid) {
-            // Simulate AJAX submission to CI4 Backend
-            const formData = new FormData(form);
-            const jsonData = {};
-            formData.forEach((value, key) => {
-                // Handle teamMembers data specifically to flatten it into a string
-                if (key.includes('teamMembers')) {
-                    const match = key.match(/teamMembers\[(\d+)\]\[(\w+)\]/);
-                    if (match) {
-                        const index = parseInt(match[1]); // This index will now be 1, 2, 3...
-                        const prop = match[2];
-                        if (!jsonData.teamMembersRaw) {
-                            jsonData.teamMembersRaw = {};
-                        }
-                        if (!jsonData.teamMembersRaw[index]) {
-                            jsonData.teamMembersRaw[index] = {};
-                        }
-                        jsonData.teamMembersRaw[index][prop] = value;
-                    }
-                } else if (key.includes('advisors')) {
-                    const match = key.match(/advisors\[(\d+)\]\[(\w+)\]/);
-                    if (match) {
-                        const index = parseInt(match[1]);
-                        const prop = match[2];
-                        if (!jsonData.advisors) {
-                            jsonData.advisors = [];
-                        }
-                        if (!jsonData.advisors[index]) {
-                            jsonData.advisors[index] = {};
-                        }
-                        jsonData.advisors[index][prop] = value;
+                        addMemberBtn.classList.remove('hidden');
                     }
                 } else {
-                    jsonData[key] = value;
+                    addMemberBtn.classList.add('hidden');
                 }
+            }
+
+            // --- Event Listeners ---
+            competitionTypeSelect.addEventListener('change', toggleCompetitionFields);
+            addMemberBtn.addEventListener('click', addTeamMemberField);
+            addAdvisorBtn.addEventListener('click', addAdvisorField);
+
+            // Trigger on initial load in case of pre-filled values (e.g., from server-side rendering or refresh)
+            toggleCompetitionFields();
+            // Setup validation listener for the competitionTypeSelect itself
+            setupValidationListener(competitionTypeSelect);
+            // Setup validation listeners for the pre-existing first advisor field
+            document.querySelectorAll('#advisorsContainer .card-advisor input, #advisorsContainer .card-advisor select').forEach(input => {
+                setupValidationListener(input);
             });
 
-            // Process teamMembersRaw into the reg_team_members_str format
-            if (jsonData.teamMembersRaw) {
-                const membersArray = Object.values(jsonData
-                    .teamMembersRaw); // Get members as array of objects
-                const formattedMembers = membersArray.map(member => {
-                    // Format: prefix firstName lastName|phone
-                    return `${member.prefix} ${member.firstName} ${member.lastName}|${member.phone}`;
-                }).join(';'); // Join individual member strings with semicolon
-
-                jsonData.reg_team_members_str = formattedMembers;
-                delete jsonData.teamMembersRaw; // Remove raw object
-            }
-
-            // Clean up advisors data
-            if (jsonData.advisors) {
-                jsonData.advisors = jsonData.advisors.filter(advisor => Object.keys(advisor).length >
-                    0);
-            }
-
-            // Add isTeam and maxMembers for backend reference if needed
-            if (details) {
-                jsonData.isTeamFromFrontend = details.isTeam;
-                jsonData.minMembersFromFrontend = details.minMembers; // Add minMembers
-                jsonData.maxMembersFromFrontend = details.maxMembers;
-            }
+            // Setup validation listeners for the "ข้อมูลการศึกษา/สังกัด" section
+            document.getElementById('schoolName').setAttribute('required', 'required');
+            setupValidationListener(document.getElementById('schoolName'));
+            document.getElementById('schoolProvince').setAttribute('required', 'required');
+            setupValidationListener(document.getElementById('schoolProvince'));
+            document.getElementById('educationLevel').setAttribute('required', 'required');
+            setupValidationListener(document.getElementById('educationLevel'));
 
 
-            Swal.fire({
-                title: 'กำลังส่งข้อมูล...',
-                text: 'กรุณารอสักครู่',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+            // --- Form Submission and Validation ---
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+                event.stopPropagation();
 
-            // Simulate network request
-            setTimeout(() => {
-                console.log('ข้อมูลที่จำลองส่งไปยัง CI4 Backend:', jsonData);
+                let isValid = true;
+                // Select all required inputs/selects that are currently visible
+                const formElements = form.querySelectorAll(
+                    '[required]:not(.form-group-hidden input, .form-group-hidden select)'
+                );
 
-                const isSuccess = Math.random() > 0.1; // 90% success rate for demo
+                // Clear previous validation messages and invalid states for all inputs
+                form.querySelectorAll('.form-control, .form-select').forEach(input => {
+                    input.classList.remove('is-invalid', 'is-valid');
+                    let feedbackDiv = input.closest('.form-floating')?.nextElementSibling || input.nextElementSibling;
+                    if (feedbackDiv && feedbackDiv.classList.contains('invalid-feedback')) {
+                        feedbackDiv.textContent = '';
+                    }
+                });
 
-                if (isSuccess) {
+
+                // Client-side validation loop for visible required fields
+                formElements.forEach(input => {
+                    if (!input.checkValidity()) {
+                        input.classList.add('is-invalid');
+                        // Find the next sibling that is an invalid-feedback div
+                        let feedbackDiv = input.closest('.form-floating')?.nextElementSibling || input.nextElementSibling;
+
+                        if (feedbackDiv && feedbackDiv.classList.contains('invalid-feedback')) {
+                            if ((input.name === 'phone' || (input.name && input.name.includes('teamMembers') && input.name.includes('phone'))) && input.value.length !== 10) {
+                                feedbackDiv.textContent = 'กรุณากรอกเบอร์โทรศัพท์ 10 หลัก';
+                            } else if (input.type === 'email' && !input.value.includes('@')) {
+                                feedbackDiv.textContent = 'กรุณากรอกอีเมลที่ถูกต้อง';
+                            } else {
+                                // Get the label text for a user-friendly message
+                                let labelText = input.labels[0] ? input.labels[0].textContent.replace(':', '').trim() : input.name;
+                                feedbackDiv.textContent = `โปรดกรอกฟิลด์: ${labelText}`;
+                            }
+                        }
+                        isValid = false;
+                    } else {
+                        input.classList.add('is-valid'); // Add is-valid class when valid
+                    }
+                });
+
+                // Additional check for exact number of team members for team competitions
+                const selectedCompetitionType = competitionTypeSelect.value;
+                const details = competitionDetails[selectedCompetitionType];
+                if (details && details.isTeam && (memberCount < details.minMembers || memberCount > details
+                        .maxMembers)) {
                     Swal.fire({
-                        icon: 'success',
-                        title: 'สมัครสำเร็จ!',
-                        text: 'การสมัครเข้าร่วมการแข่งขันของคุณได้ถูกส่งเรียบร้อยแล้ว',
-                        showConfirmButton: false,
-                        timer: 2500
-                    }).then(() => {
-                        form.reset(); // Clear form after successful submission
-                        toggleCompetitionFields(); // Reset dynamic fields
-                        advisorsContainer.innerHTML = ''; // Clear advisors
-                        advisorCount = 0; // Reset advisor count
-                        // Re-add the first advisor field after reset
-                        const firstAdvisorDiv = document.createElement('div');
-                        firstAdvisorDiv.classList.add('card-advisor');
-                        firstAdvisorDiv.innerHTML = `
+                        icon: 'error',
+                        title: 'ข้อมูลสมาชิกทีมไม่ถูกต้อง',
+                        text: `การแข่งขันประเภทนี้ต้องมีสมาชิกในทีมอย่างน้อย ${details.minMembers} คน และไม่เกิน ${details.maxMembers} คน`,
+                        showConfirmButton: true
+                    });
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    const formData = new FormData(form);
+                    const jsonData = {};
+                    const teamMembersTemp = {}; // Temporary object to build team members
+                    const advisorsTemp = {}; // Temporary object to build advisors
+
+                    formData.forEach((value, key) => {
+                        if (key.includes('teamMembers')) {
+                            const match = key.match(/teamMembers\[(\d+)\]\[(\w+)\]/);
+                            if (match) {
+                                const index = parseInt(match[1]);
+                                const prop = match[2];
+                                if (!teamMembersTemp[index]) {
+                                    teamMembersTemp[index] = {};
+                                }
+                                teamMembersTemp[index][prop] = value;
+                            }
+                        } else if (key.includes('advisors')) {
+                            const match = key.match(/advisors\[(\d+)\]\[(\w+)\]/);
+                            if (match) {
+                                const index = parseInt(match[1]);
+                                const prop = match[2];
+                                if (!advisorsTemp[index]) {
+                                    advisorsTemp[index] = {};
+                                }
+                                advisorsTemp[index][prop] = value;
+                            }
+                        } else {
+                            jsonData[key] = value;
+                        }
+                    });
+
+                    // Convert temporary objects to arrays for final JSON
+                    jsonData.teamMembers = Object.values(teamMembersTemp);
+                    // Filter out empty advisor objects if any
+                    jsonData.advisors = Object.values(advisorsTemp).filter(advisor => Object.keys(advisor).length > 0);
+
+                    // Remove individual contestant info if it's a team competition
+                    // And remove team info if it's an individual competition
+                    if (details && details.isTeam) {
+                        delete jsonData.prefix;
+                        delete jsonData.firstName;
+                        delete jsonData.lastName;
+                        delete jsonData.phone;
+                    } else { // Individual competition
+                        delete jsonData.teamName;
+                        delete jsonData.teamMembers;
+                    }
+
+                    // Add isTeam and min/maxMembers for backend reference if needed
+                    if (details) {
+                        jsonData.isTeamFromFrontend = details.isTeam;
+                        jsonData.minMembersFromFrontend = details.minMembers;
+                        jsonData.maxMembersFromFrontend = details.maxMembers;
+                    }
+
+
+                    Swal.fire({
+                        title: 'กำลังส่งข้อมูล...',
+                        text: 'กรุณารอสักครู่',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    // Simulate network request
+                    setTimeout(() => {
+                        console.log('ข้อมูลที่จำลองส่งไปยัง CI4 Backend:', jsonData);
+
+                        const isSuccess = Math.random() > 0.1; // 90% success rate for demo
+
+                        if (isSuccess) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'สมัครสำเร็จ!',
+                                text: 'การสมัครเข้าร่วมการแข่งขันของคุณได้ถูกส่งเรียบร้อยแล้ว',
+                                showConfirmButton: false,
+                                timer: 2500
+                            }).then(() => {
+                                form.reset(); // Clear form after successful submission
+                                toggleCompetitionFields(); // Reset dynamic fields
+                                advisorsContainer.innerHTML = ''; // Clear advisors
+                                advisorCount = 0; // Reset advisor count
+                                // Re-add the first advisor field after reset
+                                const firstAdvisorDiv = document.createElement('div');
+                                firstAdvisorDiv.classList.add('card-advisor');
+                                firstAdvisorDiv.innerHTML = `
                                     <button type="button" class="remove-btn hidden" data-type="advisor" data-id="1">&times;</button>
                                     <h6>อาจารย์ที่ปรึกษาคนที่ 1</h6>
                                     <div class="row g-2">
@@ -890,40 +862,39 @@ document.addEventListener('DOMContentLoaded', function() {
                                         </div>
                                     </div>
                                 `;
-                        advisorsContainer.appendChild(firstAdvisorDiv);
-                        // Re-setup validation listeners for the first advisor field
-                        firstAdvisorDiv.querySelectorAll('input, select').forEach(
-                            input => {
-                                setupValidationListener(input);
+                                advisorsContainer.appendChild(firstAdvisorDiv);
+                                // Re-setup validation listeners for the first advisor field
+                                firstAdvisorDiv.querySelectorAll('input, select').forEach(input => {
+                                    setupValidationListener(input);
+                                });
+                                advisorCount = 1; // Reset advisor count for logic
                             });
-                        advisorCount = 1; // Reset advisor count for logic
-                    });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'เกิดข้อผิดพลาด!',
+                                text: 'ไม่สามารถส่งข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
+                                showConfirmButton: true
+                            });
+                        }
+                    }, 2000); // Simulate 2-second network delay
                 } else {
+                    const firstInvalid = form.querySelector('.is-invalid');
+                    if (firstInvalid) {
+                        firstInvalid.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                    }
                     Swal.fire({
                         icon: 'error',
-                        title: 'เกิดข้อผิดพลาด!',
-                        text: 'ไม่สามารถส่งข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
+                        title: 'กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง',
+                        text: 'มีบางช่องที่คุณยังไม่ได้กรอกหรือกรอกไม่ถูกต้อง',
                         showConfirmButton: true
                     });
                 }
-            }, 2000); // Simulate 2-second network delay
-        } else {
-            const firstInvalid = form.querySelector('.is-invalid');
-            if (firstInvalid) {
-                firstInvalid.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                });
-            }
-            Swal.fire({
-                icon: 'error',
-                title: 'กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง',
-                text: 'มีบางช่องที่คุณยังไม่ได้กรอกหรือกรอกไม่ถูกต้อง',
-                showConfirmButton: true
             });
-        }
-    });
-});
-</script>
+        });
+    </script>
 
 <?= $this->endSection() ?>
