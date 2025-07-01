@@ -38,6 +38,7 @@
             font-family: 'K2D', sans-serif !important;
         }
     </style>
+    <?= $this->renderSection('css') ?>
 </head>
 
 <body>
@@ -65,20 +66,20 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
                         <a href="#service" class="nav-item nav-link">รายการแข่งขัน</a>
-                        <a href="about.html" class="nav-item nav-link">กำหนดการแข่งขัน</a>
-                        <a href="service.html" class="nav-item nav-link">ตารางแข่งขัน</a>
+                        <a href="#" onClick="showAlert()" class="nav-item nav-link">กำหนดการแข่งขัน</a>
+                        <a href="#" onClick="showAlert()" class="nav-item nav-link">ตารางแข่งขัน</a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">ดาวน์โหลดเอกสาร</a>
                             <div class="dropdown-menu m-0">
-                                <a href="feature.html" class="dropdown-item">หนังสือโครงการ</a>
-                                <a href="quote.html" class="dropdown-item">หนังสือเชิญ</a>
-                                <a href="team.html" class="dropdown-item">กติกาการแข่งขัน</a>
-                                <a href="testimonial.html" class="dropdown-item">แผนผังการจัดงาน</a>
-                                <a href="404.html" class="dropdown-item">รายชื่อโรงแรม</a>
+                                <a href="#" onClick="showAlert()" class="dropdown-item">หนังสือโครงการ</a>
+                                <a href="#" onClick="showAlert()" class="dropdown-item">หนังสือเชิญ</a>
+                                <a href="#" onClick="showAlert()" class="dropdown-item">กติกาการแข่งขัน</a>
+                                <a href="#" onClick="showAlert()" class="dropdown-item">แผนผังการจัดงาน</a>
+                                <a href="#" onClick="showAlert()" class="dropdown-item">รายชื่อโรงแรม</a>
                             </div>
                         </div>
-                        <a href="contact.html" class="nav-item nav-link">ผลการการแข่งขัน</a>
-                        <a href="contact.html" class="nav-item nav-link">รายชื่อทีมสมัครแข่งขัน</a>
+                        <a href="#" onClick="showAlert()" class="nav-item nav-link">ผลการการแข่งขัน</a>
+                        <a href="#" onClick="showAlert()" class="nav-item nav-link">รายชื่อทีมสมัครแข่งขัน</a>
                     </div>
                     <!-- <a href="#service" class="btn btn-light rounded-pill text-primary py-2 px-4 ms-lg-5">สมัครแข่งขัน</a> -->
                 </div>
@@ -161,8 +162,12 @@
     <script src="<?=base_url()?>public/lib/waypoints/waypoints.min.js"></script>
     <script src="<?=base_url()?>public/lib/owlcarousel/owl.carousel.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Template Javascript -->
     <script src="<?=base_url()?>public/js/main.js"></script>
+
+    <?= $this->renderSection('script') ?>
 </body>
 
 </html>
