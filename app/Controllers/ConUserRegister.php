@@ -13,8 +13,8 @@ class ConUserRegister extends BaseController
     public function index($key = null)
     {
         $Tb_compet = $this->db->table('tb_competition_types');
-        $data['ListCompetition'] = $Tb_compet
-        ->groupBy('ctype_name')
+        $data['KeyName'] = $key;
+        $data['DataCompetition'] = $Tb_compet->where('ctype_keyname', $key)
         ->orderBy('ctype_id', 'ASC')
         ->get()->getResult();
         //echo '<pre>';print_r($data); exit();

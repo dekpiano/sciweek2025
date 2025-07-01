@@ -2,20 +2,45 @@
 <?= $this->section('title') ?>
 หน้าแรก
 <?= $this->endSection() ?>
+<?= $this->section('css') ?>
+<style>
+     .bouncing-image {
+      
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+</style>
+<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 <div class="bg-primary hero-header">
     <div class="container">
         <div class="row g-5 align-items-center">
             <div class="col-lg-6 text-center text-center">
-                <h1 class="text-white text-center mb-4 animated zoomIn" style="font-size: 3.7rem;">SCIENCE WEEK 2025</h1>
-                <h2 class="text-white text-center pb-3 animated zoomIn">งานมหกรรมวันวิทยาศาสตร์ <br> “วิทย์ยุคใหม่ AI เปลี่ยนโลก” <br> 6 - 7 สิงหาคม 2568
+                <h1 class="text-white text-center mb-4 animated zoomIn" style="font-size: 3.7rem;">SCIENCE WEEK 2025
+                </h1>
+                <h2 class="text-white text-center pb-3 animated zoomIn">งานมหกรรมวันวิทยาศาสตร์ <br> “วิทย์ยุคใหม่ AI
+                    เปลี่ยนโลก” <br> 6 - 7 สิงหาคม 2568
                 </h2>
-                <a href="#service" class="btn btn-outline-light rounded-pill border-2 py-3 px-3 animated slideInRight">รายการแข่งขัน</a>
-                    <a target="_blank" href="https://maps.app.goo.gl/NPBV39wtktEs6nXX6" class="btn btn-light rounded-pill border-2 py-3 px-3 animated slideInRight"> <i class="bi bi-geo-alt-fill"></i> Google Map</a>
+                <a href="#service"
+                    class="btn btn-outline-light rounded-pill border-2 py-3 px-3 animated slideInRight">รายการแข่งขัน</a>
+                <a target="_blank" href="https://maps.app.goo.gl/NPBV39wtktEs6nXX6"
+                    class="btn btn-light rounded-pill border-2 py-3 px-3 animated slideInRight"> <i
+                        class="bi bi-geo-alt-fill"></i> Google Map</a>
             </div>
             <div class="col-lg-6 text-center text-lg-start">
-                <img class="img-fluid animated zoomIn" src="<?=base_url()?>public/img/home/logo_sci.png" alt="">
+                <img class="img-fluid animated zoomIn bouncing-image" src="<?=base_url()?>public/img/home/logo_sci.png" alt="">
             </div>
         </div>
     </div>
@@ -43,11 +68,17 @@
                     </div>
                     <div class="p-5">
                         <h5 class="mb-3">การแข่งขัน <?=$competition->ctype_name?></h5>
-                        <span ><?=$competition->ctype_detail?></span>
+                        <span><?=$competition->ctype_detail?></span>
                         <div class="mt-4">
-                            <a href="" class="btn-info btn"><i class="bi bi-file-earmark-fill"></i> รายละเอียด</a>
-                            <!-- <a target="_blank" href="<?=$competition->ctype_link_reg?>" class="btn-success btn"><i class="bi bi-pencil-square"></i> สมัครแข่งขัน</a> -->
-                            <a target="_blank" href="<?=base_url('Register/'.$competition->ctype_keyname);?>" class="btn-success btn"><i class="bi bi-pencil-square"></i> สมัครแข่งขัน</a>
+                            <a target="_blank" href="<?=$competition->ctype_linkdetail?>" class="btn-info btn"><i
+                                    class="bi bi-file-earmark-fill"></i> รายละเอียด</a>
+                            <?php if(1==1): ?>
+                            <a href="<?=base_url('Register/'.$competition->ctype_keyname)?>" class="btn-success btn"><i
+                                    class="bi bi-pencil-square"></i> สมัครแข่งขัน</a>
+                            <?php else: ?>
+                            <a href="#" onClick="showAlertRegis()" class="btn-secondary btn"><i
+                                    class="bi bi-pencil-square"></i> สมัครแข่งขัน</a>
+                            <?php endif;?>
                         </div>
 
                     </div>
@@ -65,10 +96,11 @@
         <div class="row align-items-center" style="height: 250px;">
             <div class="col-12 col-md-6">
                 <h3 class="text-white">AI, วิทยาศาสตร์, และเทคโนโลยี: ความสัมพันธ์ที่ขับเคลื่อนอนาคต</h3>
-                <p class="text-white">วิทยาศาสตร์ค้นพบความรู้ใหม่ ๆ ส่วนเทคโนโลยีนำความรู้นั้นไปใช้ประโยชน์ และ AI ก็เป็นผลผลิตสำคัญจากการผสานรวมกันของวิทยาศาสตร์และเทคโนโลยี ที่กำลังเปลี่ยนโลกของเราอย่างรวดเร็ว</p>
+                <p class="text-white">วิทยาศาสตร์ค้นพบความรู้ใหม่ ๆ ส่วนเทคโนโลยีนำความรู้นั้นไปใช้ประโยชน์ และ AI
+                    ก็เป็นผลผลิตสำคัญจากการผสานรวมกันของวิทยาศาสตร์และเทคโนโลยี ที่กำลังเปลี่ยนโลกของเราอย่างรวดเร็ว</p>
             </div>
             <div class="col-md-6 text-center mb-n5 d-none d-md-block">
-                <img class="img-fluid " style="max-height: 400px;margin-top:-88px;"
+                <img class="img-fluid bouncing-image" style="max-height: 400px;margin-top:-88px;"
                     src="<?=base_url()?>public/img/home/logo_sci2.png">
             </div>
         </div>
@@ -82,7 +114,7 @@
     <div class="container">
         <div class="row g-5 align-items-center">
             <div class="col-lg-6 wow zoomIn" data-wow-delay="0.1s">
-                <img class="img-fluid" src="<?=base_url()?>public/img/home/logo_sci3.png" alt="Logo">
+                <img class="img-fluid bouncing-image" src="<?=base_url()?>public/img/home/logo_sci3.png" alt="Logo">
             </div>
             <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="d-inline-block border rounded-pill text-primary px-4 mb-3">About Us</div>
@@ -109,7 +141,7 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -203,4 +235,24 @@
 
 
 
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script>
+function showAlert() {
+    Swal.fire({
+        title: "แจ้งเตือน?",
+        text: "กำลังรอข้อมูล...?",
+        icon: "question"
+    });
+}
+function showAlertRegis() {
+    Swal.fire({
+        title: "แจ้งเตือน?",
+        text: "จะให้เปิดสมัครแข่งขันในระบบภายในเร็วๆ นี้",
+        icon: "warning"
+    });
+}
+
+</script>
 <?= $this->endSection() ?>
