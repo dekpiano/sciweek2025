@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-class Home extends BaseController
+class ControlUserHome extends BaseController
 {
     protected $db;
     public function __construct()
@@ -19,6 +19,6 @@ class Home extends BaseController
         ->get()->getResult();
         //echo '<pre>';print_r($data); exit();
 
-        return view('User/Pages/Home',$data);
+        return view('User/Pages/Home/PageHome',$data);
     }
 }

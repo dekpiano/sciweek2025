@@ -79,7 +79,7 @@
                             </div>
                         </div>
                         <a href="#" onClick="showAlert()" class="nav-item nav-link">ผลการการแข่งขัน</a>
-                        <a href="#" onClick="showAlert()" class="nav-item nav-link">รายชื่อทีมสมัครแข่งขัน</a>
+                        <a href="<?=base_url('Register/ListNameTeams')?>"  class="nav-item nav-link">รายชื่อทีมสมัครแข่งขัน</a>
                     </div>
                     <!-- <a href="#service" class="btn btn-light rounded-pill text-primary py-2 px-4 ms-lg-5">สมัครแข่งขัน</a> -->
                 </div>
