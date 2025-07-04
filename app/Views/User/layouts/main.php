@@ -37,6 +37,7 @@
         *{
             font-family: 'K2D', sans-serif !important;
         }
+        
     </style>
     <?= $this->renderSection('css') ?>
 </head>
@@ -56,24 +57,27 @@
         <!-- Navbar & Hero Start -->
         <div class="position-relative p-0">
             <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
-                <a href="index.html" class="navbar-brand p-0">
-                    <h1 class="m-0">สัปดาห์วิทยาศาสตร์ 2025</h1>
-                    <!-- <img src="<?=base_url()?>public/img/logo.png" alt="Logo"> -->
+                <a href="<?=base_url()?>" class="navbar-brand p-0 d-flex">
+                    <img src="<?=base_url()?>public/img/logo/LogoSKJ_4.png" alt="Logo" class="mx-2">
+                    <img src="<?=base_url()?>public/img/logo/opj.png" alt="Logo" class="mx-2">
+                    <img src="<?=base_url()?>public/img/logo/owtys.png" alt="Logo" class="mx-2">
+                    <!-- <h1 class="m-0">สัปดาห์วิทยาศาสตร์ 2025</h1> -->
+                    
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <i class="bi bi-layout-text-sidebar"></i>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
-                        <a href="#service" class="nav-item nav-link">รายการแข่งขัน</a>
+                        <a href="<?=base_url()?>#service" class="nav-item nav-link">รายการแข่งขัน</a>
                         <a href="#" onClick="showAlert()" class="nav-item nav-link">กำหนดการแข่งขัน</a>
                         <a href="#" onClick="showAlert()" class="nav-item nav-link">ตารางแข่งขัน</a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">ดาวน์โหลดเอกสาร</a>
                             <div class="dropdown-menu m-0">
                                 <a href="#" onClick="showAlert()" class="dropdown-item">หนังสือโครงการ</a>
-                                <a href="#" onClick="showAlert()" class="dropdown-item">หนังสือเชิญ</a>
-                                <a href="#" onClick="showAlert()" class="dropdown-item">กติกาการแข่งขัน</a>
+                                <a target="_blank" href="https://drive.google.com/file/d/1wyqherkET2vx1ouSoxtoDGXerD9CqSda/view?usp=sharing"  class="dropdown-item">หนังสือเชิญ</a>
+                                <a href="<?=base_url()?>#service" class="dropdown-item">กติกาการแข่งขัน</a>
                                 <a href="#" onClick="showAlert()" class="dropdown-item">แผนผังการจัดงาน</a>
                                 <a href="#" onClick="showAlert()" class="dropdown-item">รายชื่อโรงแรม</a>
                             </div>
@@ -96,7 +100,7 @@
 
 
         <!-- Footer Start -->
-        <div class="container-fluid bg-dark text-light footer pt-5 wow fadeIn" data-wow-delay="0.1s"
+        <div class="container-fluid bg-primary text-light footer pt-5 wow fadeIn" data-wow-delay="0.1s"
             style="margin-top: 6rem;">
             <div class="container py-5">
                 <div class="row g-5">

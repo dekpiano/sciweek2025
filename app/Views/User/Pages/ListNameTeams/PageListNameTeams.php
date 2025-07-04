@@ -21,7 +21,7 @@
 
 .competition-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 30px #00b98e;
 }
 
 .competition-card h5 {
@@ -66,12 +66,18 @@
 .modal-body ul li:last-child {
     border-bottom: none;
 }
+
+.hero-header {
+            background: url(../public/img/bg/bg.jpg) center bottom no-repeat;
+            background-size: cover;
+            padding: 10rem 0 5rem 0;
+        }
 </style>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
-<div class="bg-primary page-header">
+<div class="bg-primary page-header hero-header">
     <div class="container text-center">
         <h1 class="text-white animated zoomIn mb-3">รายชื่อทีมสมัครแข่งขัน</h1>
         <nav aria-label="breadcrumb">
@@ -85,7 +91,7 @@
 </div>
 
 <div class="container">
-    <h2>รายชื่อทีมที่สมัครแข่งขันงานสัปดาห์วิทยาศาสตร์</h2>
+    
     <div id="competitionList" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <!-- Competition cards will be dynamically loaded here -->
         <!-- Initial content will be rendered by renderCompetitionCards() on DOMContentLoaded -->
@@ -97,7 +103,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="teamListModalLabel">รายชื่อทีม: </h5>
+                <h5 class="modal-title text-white" id="teamListModalLabel">รายชื่อทีม: </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -196,15 +202,15 @@
             // *** สำคัญมาก: กำหนด URL ของ Google Apps Script Web App สำหรับแต่ละประเภทการแข่งขัน ***
             // *** คุณจะต้องสร้างและ Deploy Google Apps Script Web App แยกกัน 9 ตัว และนำ URL มาใส่ที่นี่ ***
             const webAppUrlMapping = {
-                "waterbottlerocket": "YOUR_WEB_APP_URL_FOR_WATERBOTTLE_ROCKET_SHEET_HERE", 
-                "scientificdrawings": "YOUR_WEB_APP_URL_FOR_SCIENTIFIC_DRAWINGS_SHEET_HERE", 
-                "Innovativecostumedesign": "YOUR_WEB_APP_URL_FOR_COSTUME_DESIGN_SHEET_HERE", 
-                "ScienceCoverDance": "YOUR_WEB_APP_URL_FOR_COVER_DANCE_SHEET_HERE", 
-                "SpeedyQuiz": "https://script.google.com/macros/s/AKfycbyc31EYToSja_5bnlq0XqolygzmNOwdZZiERacURd37Cidzrxg1x_x_ebstICKM1GYjXg/exec", 
-                "ROV": "https://script.google.com/macros/s/AKfycbwAf_ka37cOoOLQ_mRYTECO8ezT9aIOplUDUhUpumLGaV_XScMMqw2ZhHIfeFWLj258dg/exec", 
-                "LineTracing": "YOUR_WEB_APP_URL_FOR_LINE_TRACING_SHEET_HERE", 
-                "GAME24": "YOUR_WEB_APP_URL_FOR_GAME24_SHEET_HERE", 
-                "Rubik": "YOUR_WEB_APP_URL_FOR_RUBIK_SHEET_HERE" 
+                "waterbottlerocket": "https://script.google.com/macros/s/AKfycbybOAsJsW0ZHEyzuaizISlNvZbtI5tnVCnyRSGmdx-mNVgjX2zKrRvMT4whlLD1UJAY/exec", 
+                "scientificdrawings": "https://script.google.com/macros/s/AKfycbySiGVzF-Jx9j5Fza3puGdJynWNWlIgKIp5HgK_XcYpiNgDrCa6_0OKzlLrcE0SkkY/exec", 
+                "Innovativecostumedesign": "https://script.google.com/macros/s/AKfycbyfdmoGl38DeECzjyc5ZIq8t0KP-Ct03IIq-Pf4ciIPMAkp_SJdBH5yaW6thhtIK0OW0w/exec", 
+                "ScienceCoverDance": "https://script.google.com/macros/s/AKfycbzzeVus_Pbnep0ksdVSkFHjawQE4NWeL39wdQRwZch7iJjeauMLZdkjUQHuc-87Wfz5/exec", 
+                "SpeedyQuiz": "https://script.google.com/macros/s/AKfycbz1TRJ2vpCtExCQtWsUTBy9S4RKChHhXFbNurBSk5EXDaF__YwtbWA27jmr2MuBKcBA/exec", 
+                "ROV": "https://script.google.com/macros/s/AKfycbyc31EYToSja_5bnlq0XqolygzmNOwdZZiERacURd37Cidzrxg1x_x_ebstICKM1GYjXg/exec", 
+                "LineTracing": "https://script.google.com/macros/s/AKfycbzNoWVbTMGI6d4XKjU9hZxpP2lkANv9ei8wkAGf5q-JUA4sTq1OAeZaZW43yoyeSvgkFw/exec", 
+                "GAME24": "https://script.google.com/macros/s/AKfycbxlSOG9crWdG2Vsq3jCfi3gWkmPJ7eKnR01SukKqd_gVQ_Hq2kO6WoAzcO-avpPUOIxfQ/exec", 
+                "Rubik": "https://script.google.com/macros/s/AKfycbw_S2Vn3IRtJH7mwykBjXGhpPJguqRw6VeG3tkXFUjHnoFw-v9_5_RPES6tdNefcYnt/exec" 
             };
 
             // Object to store fetched registered teams, keyed by competitionType
@@ -228,7 +234,7 @@
                 noTeamMessage.classList.add('d-none'); // Hide "no team" message while loading
 
                 if (!webAppUrl || !webAppUrl.startsWith('https://script.google.com/macros/s/')) {
-                    modalTeamList.innerHTML = `<p class="text-danger text-center py-4">ข้อผิดพลาด: ไม่พบ URL ของ Google Apps Script Web App ที่ถูกต้องสำหรับประเภทการแข่งขันนี้</p>`;
+                    modalTeamList.innerHTML = `<p class="text-danger text-center py-4">ข้อผิดพลาด: ไม่พบ URL ที่ถูกต้องสำหรับประเภทการแข่งขันนี้</p>`;
                     console.error(`Error: Invalid or missing Web App URL for competition type: ${competitionKey}. URL: ${webAppUrl}`);
                     return;
                 }

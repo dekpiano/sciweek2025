@@ -4,22 +4,51 @@
 <?= $this->endSection() ?>
 <?= $this->section('css') ?>
 <style>
-     .bouncing-image {
-      
-      animation: bounce 2s infinite;
+.bouncing-image {
+
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(0);
     }
 
-    @keyframes bounce {
-      0% {
-        transform: translateY(0);
-      }
-      50% {
+    50% {
         transform: translateY(-10px);
-      }
-      100% {
-        transform: translateY(0);
-      }
     }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.elementor-shape {
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    line-height: 0;
+    direction: ltr;
+    bottom: -3px;
+}
+
+.hero-header {
+            background: url(public/img/bg/bg.jpg) center bottom no-repeat;
+            background-size: cover;
+            padding: 10rem 0 5rem 0;
+        }
+        .hero-header-banner {
+            background: url(public/img/bg/bg.jpg) center top no-repeat;
+           
+            
+        }
+
+        @media (max-width: 991.98px) {
+    .hero-header {
+        padding: 6rem 0 9rem 0;
+    }
+}
 </style>
 <?= $this->endSection() ?>
 
@@ -40,10 +69,18 @@
                         class="bi bi-geo-alt-fill"></i> Google Map</a>
             </div>
             <div class="col-lg-6 text-center text-lg-start">
-                <img class="img-fluid animated zoomIn bouncing-image" src="<?=base_url()?>public/img/home/logo_sci.png" alt="">
+                <img class="img-fluid animated zoomIn bouncing-image" src="<?=base_url()?>public/img/home/logo_sci.png"
+                    alt="">
             </div>
         </div>
     </div>
+    <!-- <div class="elementor-shape">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none">
+            <path class="elementor-shape-fill"
+                d="M500,97C126.7,96.3,0.8,19.8,0,0v100l1000,0V1C1000,19.4,873.3,97.8,500,97z"></path>
+    </div> -->
+
+    </svg>
 </div>
 <!-- Navbar & Hero End -->
 
@@ -71,7 +108,7 @@
                         <span><?=$competition->ctype_detail?></span>
                         <div class="mt-4">
                             <a target="_blank" href="<?=$competition->ctype_linkdetail?>" class="btn-info btn"><i
-                                    class="bi bi-file-earmark-fill"></i> รายละเอียด</a>
+                                    class="bi bi-file-earmark-fill"></i> รายละเอียด / กติกา</a>
                             <?php if(1==1): ?>
                             <a target="_blank" href="<?=$competition->ctype_link_reg?>" class="btn-success btn"><i
                                     class="bi bi-pencil-square"></i> สมัครแข่งขัน</a>
@@ -91,7 +128,7 @@
 <!-- Service End -->
 
 <!-- Newsletter Start -->
-<div class="bg-primary my-6 wow fadeInUp" data-wow-delay="0.1s">
+<div class="bg-primary hero-header-banner my-6 wow fadeInUp" data-wow-delay="0.1s">
     <div class="container px-lg-5">
         <div class="row align-items-center" style="height: 250px;">
             <div class="col-12 col-md-6">
@@ -246,6 +283,7 @@ function showAlert() {
         icon: "question"
     });
 }
+
 function showAlertRegis() {
     Swal.fire({
         title: "แจ้งเตือน?",
@@ -253,6 +291,5 @@ function showAlertRegis() {
         icon: "warning"
     });
 }
-
 </script>
 <?= $this->endSection() ?>
