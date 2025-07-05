@@ -34,21 +34,78 @@
 }
 
 .hero-header {
-            background: url(public/img/bg/bg.jpg) center bottom no-repeat;
-            background-size: cover;
-            padding: 10rem 0 5rem 0;
-        }
-        .hero-header-banner {
-            background: url(public/img/bg/bg.jpg) center top no-repeat;
-           
-            
-        }
+    background: url(public/img/bg/bg.jpg) center bottom no-repeat;
+    background-size: cover;
+    padding: 10rem 0 5rem 0;
+}
 
-        @media (max-width: 991.98px) {
+.hero-header-banner {
+    background: url(public/img/bg/bg.jpg) center top no-repeat;
+
+
+}
+
+@media (max-width: 991.98px) {
     .hero-header {
         padding: 6rem 0 9rem 0;
     }
 }
+
+        /* Modal styles */
+        .modal-header {
+            background-color: #007bff;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .modal-header .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%); /* Make close button white */
+        }
+        .modal-content {
+            border-radius: 12px;
+        }
+        .modal-body ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .modal-body ul li {
+            padding: 8px 0;
+        }
+        .modal-body ul li:last-child {
+            border-bottom: none;
+        }
+        /* Custom styles for tables within modal */
+        .modal-body .team-table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+            border: 1px solid #dee2e6;
+            border-radius: 8px; /* Apply border-radius to the table itself */
+            overflow: hidden; /* Ensures rounded corners are visible with borders */
+        }
+        .modal-body .team-table th,
+        .modal-body .team-table td {
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+        .modal-body .team-table thead th {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: 600;
+            text-align: left;
+        }
+        .modal-body .team-table tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        .modal-body .team-table tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+        .modal-body .team-table .team-info-row td {
+            font-size: 1.1em;
+            font-weight: bold;
+            background-color: #f8f9fa;
+        }
 </style>
 <?= $this->endSection() ?>
 
@@ -107,15 +164,24 @@
                         <h5 class="mb-3">การแข่งขัน <?=$competition->ctype_name?></h5>
                         <span><?=$competition->ctype_detail?></span>
                         <div class="mt-4">
-                            <a target="_blank" href="<?=$competition->ctype_linkdetail?>" class="btn-info btn"><i
-                                    class="bi bi-file-earmark-fill"></i> รายละเอียด / กติกา</a>
+                            <a target="_blank" href="<?=$competition->ctype_linkdetail?>"
+                                class="btn btn-outline-success d-block"><i class="bi bi-file-earmark-fill"></i>
+                                รายละเอียด/กติกา</a>
+                                
+                            <button type="button" data-competition-key="<?=$competition->ctype_keyname?>"
+                                class="btn btn-outline-secondary w-100 mt-1 competition-button"><i
+                                    class="bi bi-file-earmark-fill"></i>
+                                รายชื่อทีมสมัครแข่งขัน</button>
+                        </div>
+                        <div class="mt-3">
                             <?php if(1==1): ?>
-                            <a target="_blank" href="<?=$competition->ctype_link_reg?>" class="btn-success btn"><i
-                                    class="bi bi-pencil-square"></i> สมัครแข่งขัน</a>
+                            <a target="_blank" href="<?=$competition->ctype_link_reg?>"
+                                class="btn-success btn d-block"><i class="bi bi-pencil-square"></i> สมัครแข่งขัน</a>
                             <?php else: ?>
                             <a href="#" onClick="showAlertRegis()" class="btn-secondary btn"><i
                                     class="bi bi-pencil-square"></i> สมัครแข่งขัน</a>
                             <?php endif;?>
+
                         </div>
 
                     </div>
@@ -270,7 +336,27 @@
 </div> -->
 <!-- Testimonial End -->
 
-
+<!-- Team List Modal -->
+    <div class="modal fade" id="teamListModal" tabindex="-1" aria-labelledby="teamListModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="teamListModalLabel">รายชื่อทีม: </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalCompetitionDescription" class="text-muted"></p>
+                    <div id="modalTeamList">
+                        <!-- Team list will be populated here -->
+                    </div>
+                    <p id="noTeamMessage" class="text-center text-muted d-none mt-3">ยังไม่มีทีมสมัครในประเภทนี้</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <?= $this->endSection() ?>
 
@@ -292,4 +378,284 @@ function showAlertRegis() {
     });
 }
 </script>
+
+
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // อ้างอิงถึงองค์ประกอบ HTML ที่จำเป็น
+            const competitionButtonsContainer = document.getElementById('competitionButtons'); // ID ของ div ที่เก็บปุ่ม
+            const teamListModal = new bootstrap.Modal(document.getElementById('teamListModal'));
+            const modalTitle = document.getElementById('teamListModalLabel');
+            const modalDescription = document.getElementById('modalCompetitionDescription');
+            const modalTeamList = document.getElementById('modalTeamList');
+            const noTeamMessage = document.getElementById('noTeamMessage');
+
+            // กำหนดรายละเอียดประเภทการแข่งขัน
+            // ใช้ข้อมูลนี้เพื่อแสดงชื่อและรายละเอียดของการแข่งขัน
+            const competitionDetails = {
+                "waterbottlerocket": {
+                    name: "แข่งขันจรวดขวดน้ำ (แม่นยำ)",
+                    description: "การแข่งขันสร้างและยิงจรวดขวดน้ำเพื่อความแม่นยำ",
+                    isTeam: true,
+                    minMembers: 3,
+                    maxMembers: 3
+                },
+                "scientificdrawings": {
+                    name: "ภาพวาดทางวิทยาศาสตร์",
+                    description: "ประกวดภาพวาดที่สื่อถึงแนวคิดทางวิทยาศาสตร์",
+                    isTeam: true,
+                    minMembers: 2,
+                    maxMembers: 2
+                },
+                "Innovativecostumedesign": {
+                    name: "ประกวดชุดรีไซเคิล (Innovative costume design)",
+                    description: "การออกแบบชุดจากวัสดุรีไซเคิล",
+                    isTeam: false,
+                    minMembers: 1,
+                    maxMembers: 1
+                },
+                "ScienceCoverDance": {
+                    name: "Science Cover Dance",
+                    description: "การเต้น Cover Dance ในธีมวิทยาศาสตร์",
+                    isTeam: true,
+                    minMembers: 5,
+                    maxMembers: 10
+                },
+                "SpeedyQuiz": {
+                    name: "ถามไว ตอบไว (Speedy quiz)",
+                    description: "การแข่งขันตอบคำถามวิทยาศาสตร์อย่างรวดเร็ว",
+                    isTeam: true,
+                    minMembers: 3,
+                    maxMembers: 3
+                },
+                "ROV": {
+                    name: "กีฬา E-Sport ROV",
+                    description: "การแข่งขันเกม ROV",
+                    isTeam: true,
+                    minMembers: 5,
+                    maxMembers: 7
+                },
+                "LineTracing": {
+                    name: "Line Tracing",
+                    description: "การแข่งขันหุ่นยนต์เดินตามเส้น",
+                    isTeam: true,
+                    minMembers: 1,
+                    maxMembers: 1
+                },
+                "GAME24": {
+                    name: "GAME 24",
+                    description: "การแข่งขันเกม 24 (คณิตศาสตร์)",
+                    isTeam: true,
+                    minMembers: 1,
+                    maxMembers: 1
+                },
+                "Rubik": {
+                    name: "Rubik",
+                    description: "การแข่งขันแก้รูบิค",
+                    isTeam: true,
+                    minMembers: 1,
+                    maxMembers: 1
+                },
+            };
+
+            // *** สำคัญมาก: กำหนด URL ของ Google Apps Script Web App สำหรับแต่ละประเภทการแข่งขัน ***
+            // *** คุณจะต้องสร้างและ Deploy Google Apps Script Web App แยกกัน 9 ตัว และนำ URL มาใส่ที่นี่ ***
+            // *** ตัวอย่าง: "waterbottlerocket": "https://script.google.com/macros/s/AKfycbz_YOUR_DEPLOYMENT_ID_FOR_ROCKET/exec", ***
+            const webAppUrlMapping = {
+        "waterbottlerocket": "https://script.google.com/macros/s/AKfycbybOAsJsW0ZHEyzuaizISlNvZbtI5tnVCnyRSGmdx-mNVgjX2zKrRvMT4whlLD1UJAY/exec",
+        "scientificdrawings": "https://script.google.com/macros/s/AKfycbySiGVzF-Jx9j5Fza3puGdJynWNWlIgKIp5HgK_XcYpiNgDrCa6_0OKzlLrcE0SkkY/exec",
+        "Innovativecostumedesign": "https://script.google.com/macros/s/AKfycbyfdmoGl38DeECzjyc5ZIq8t0KP-Ct03IIq-Pf4ciIPMAkp_SJdBH5yaW6thhtIK0OW0w/exec",
+        "ScienceCoverDance": "https://script.google.com/macros/s/AKfycbzzeVus_Pbnep0ksdVSkFHjawQE4NWeL39wdQRwZch7iJjeauMLZdkjUQHuc-87Wfz5/exec",
+        "SpeedyQuiz": "https://script.google.com/macros/s/AKfycbz1TRJ2vpCtExCQtWsUTBy9S4RKChHhXFbNurBSk5EXDaF__YwtbWA27jmr2MuBKcBA/exec",
+        "ROV": "https://script.google.com/macros/s/AKfycbyc31EYToSja_5bnlq0XqolygzmNOwdZZiERacURd37Cidzrxg1x_x_ebstICKM1GYjXg/exec",
+        "LineTracing": "https://script.google.com/macros/s/AKfycbzNoWVbTMGI6d4XKjU9hZxpP2lkANv9ei8wkAGf5q-JUA4sTq1OAeZaZW43yoyeSvgkFw/exec",
+        "GAME24": "https://script.google.com/macros/s/AKfycbxlSOG9crWdG2Vsq3jCfi3gWkmPJ7eKnR01SukKqd_gVQ_Hq2kO6WoAzcO-avpPUOIxfQ/exec",
+        "Rubik": "https://script.google.com/macros/s/AKfycbw_S2Vn3IRtJH7mwykBjXGhpPJguqRw6VeG3tkXFUjHnoFw-v9_5_RPES6tdNefcYnt/exec"
+    };
+
+            // Object สำหรับเก็บข้อมูลทีมที่ดึงมาแล้ว เพื่อไม่ต้องดึงซ้ำ
+            const registeredTeams = {};
+
+            /**
+             * ฟังก์ชันสำหรับดึงข้อมูลทีมจาก Google Apps Script Web App และแสดงผลใน Modal
+             * @param {string} competitionKey - คีย์ของประเภทการแข่งขัน (เช่น "waterbottlerocket")
+             */
+            async function fetchAndDisplayTeams(competitionKey) {
+                const comp = competitionDetails[competitionKey];
+                const webAppUrl = webAppUrlMapping[competitionKey];
+
+                // แสดงสถานะกำลังโหลดใน Modal
+                modalTitle.textContent = `รายชื่อทีม: ${comp.name}`;
+                modalDescription.textContent = comp.description;
+                modalTeamList.innerHTML = `
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading teams...</span>
+                        </div>
+                        <p class="mt-2 text-muted">กำลังดึงข้อมูลทีมสำหรับ ${comp.name}...</p>
+                    </div>
+                `;
+                noTeamMessage.classList.add('d-none'); // ซ่อนข้อความ "ไม่มีทีม" ขณะโหลด
+
+                // ตรวจสอบ URL ของ Web App
+                if (!webAppUrl || !webAppUrl.startsWith('https://script.google.com/macros/s/')) {
+                    modalTeamList.innerHTML = `<p class="text-danger text-center py-4">ข้อผิดพลาด: ไม่พบ URL ของ Google Apps Script Web App ที่ถูกต้องสำหรับประเภทการแข่งขันนี้</p>`;
+                    console.error(`Error: Invalid or missing Web App URL for competition type: ${competitionKey}. URL: ${webAppUrl}`);
+                    return;
+                }
+
+                try {
+                    console.log(`Fetching data for ${competitionKey} from URL: ${webAppUrl}`);
+
+                    const response = await fetch(webAppUrl);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+                    }
+                    const data = await response.json();
+
+                    // จัดเก็บข้อมูลที่ดึงมา
+                    registeredTeams[competitionKey] = []; // ล้างข้อมูลเก่าสำหรับประเภทนี้
+                    data.forEach(entry => {
+                        const teamName = entry['ชื่อทีม'] || 'ไม่ระบุชื่อทีม';
+                        const schoolName = entry['ชื่อโรงเรียน / สถาบัน'] || 'ไม่ระบุชื่อโรงเรียน'; 
+                        const provinceName = entry['จังหวัด'] || 'ไม่ระบุจังหวัด'; 
+                        
+                        // ดึงข้อมูลสมาชิก (แม้ว่าจะไม่ได้แสดงผลโดยตรงในตารางสรุป)
+                        let membersList = [];
+                        const maxMembersToParse = 10; // กำหนดจำนวนผู้แข่งขันสูงสุดที่คาดว่าจะเจอในชีต
+                        for (let i = 1; i <= maxMembersToParse; i++) {
+                            const prefixCol = `คำนำหน้า ผู้แข่งขันคนที่ ${i}`;
+                            const fullNameCol = `ชื่อ - นามสกุล ผู้แข่งขันคนที่ ${i}`;
+                            const phoneCol = `เบอร์โทรศัพท์ ผู้แข่งขันคนที่ ${i}`;
+
+                            const prefix = entry[prefixCol];
+                            const fullName = entry[fullNameCol];
+                            const phone = entry[phoneCol];
+
+                            if (fullName && String(fullName).trim() !== '') {
+                                membersList.push({
+                                    prefix: String(prefix || ''), 
+                                    fullName: String(fullName),
+                                    phone: String(phone || '') 
+                                });
+                            } else {
+                                // หยุดวนลูปถ้าไม่พบข้อมูลสมาชิกในลำดับถัดไป (สมมติว่าข้อมูลเรียงลำดับ)
+                                break; 
+                            }
+                        }
+
+                        registeredTeams[competitionKey].push({
+                            teamName: teamName, 
+                            members: membersList, // เก็บข้อมูลสมาชิกไว้เผื่อใช้ในอนาคต
+                            schoolName: schoolName, 
+                            provinceName: provinceName 
+                        });
+                    });
+
+                    // แสดงผลทีมใน Modal
+                    renderTeamsInModal(competitionKey);
+
+                } catch (error) {
+                    console.error(`Error fetching data for ${competitionKey}:`, error);
+                    modalTeamList.innerHTML = `
+                        <p class="text-danger text-center py-4">ไม่สามารถดึงข้อมูลทีมได้</p>
+                        <p class="text-muted text-center">รายละเอียด: ${error.message}</p>
+                        <p class="text-muted text-center">โปรดตรวจสอบ URL ของ Google Apps Script Web App และการตั้งค่า Apps Script Web App (Deploy ด้วยสิทธิ์ 'ทุกคน' และมี CORS Headers)</p>
+                    `;
+                    noTeamMessage.classList.remove('d-none'); // แสดงข้อความ "ไม่มีทีม" หากดึงข้อมูลล้มเหลว
+                }
+            }
+
+            /**
+             * ฟังก์ชันสำหรับแสดงผลรายชื่อทีมใน Modal ในรูปแบบตารางเดียว
+             * @param {string} competitionKey - คีย์ของประเภทการแข่งขัน
+             */
+            function renderTeamsInModal(competitionKey) {
+                const comp = competitionDetails[competitionKey];
+                const teams = registeredTeams[competitionKey] || [];
+
+                modalTeamList.innerHTML = ''; // ล้างข้อความโหลด/ข้อผิดพลาด
+
+                if (teams.length > 0) {
+                    noTeamMessage.classList.add('d-none'); // ซ่อนข้อความ "ไม่มีทีม" หากมีข้อมูลทีม
+                    
+                    let tableHtml = `<table class="team-table table table-bordered">`;
+                    tableHtml += `<thead>`;
+                    tableHtml += `<tr>`;
+                    tableHtml += `<th>ลำดับ</th>`;
+                    tableHtml += `<th>ชื่อทีม / ผู้สมัคร</th>`; 
+                    tableHtml += `<th>โรงเรียน</th>`;
+                    tableHtml += `<th>จังหวัด</th>`;
+                    tableHtml += `</tr>`;
+                    tableHtml += `</thead>`;
+                    tableHtml += `<tbody>`;
+
+                    teams.forEach((team, index) => {
+                        tableHtml += `<tr>`;
+                        tableHtml += `<td>${index + 1}</td>`;
+                        
+                        let displayName = team.teamName || 'ไม่ระบุ';
+                        if (!comp.isTeam && team.members && team.members.length > 0) {
+                            // สำหรับบุคคล: ถ้าชื่อทีมเป็นค่าเริ่มต้นหรือไม่ระบุ ให้ใช้ชื่อ-นามสกุลของผู้สมัครหลัก
+                            const mainMember = team.members[0];
+                            if (mainMember.fullName && (team.teamName === 'ไม่ระบุชื่อทีม' || team.teamName === '')) { 
+                                displayName = `${mainMember.prefix} ${mainMember.fullName}`;
+                            }
+                        }
+                        tableHtml += `<td>${displayName}</td>`;
+                        tableHtml += `<td>${team.schoolName || 'ไม่ระบุ'}</td>`;
+                        tableHtml += `<td>${team.provinceName || 'ไม่ระบุ'}</td>`;
+                        tableHtml += `</tr>`;
+                    });
+
+                    tableHtml += `</tbody>`;
+                    tableHtml += `</table>`;
+                    
+                    modalTeamList.innerHTML = tableHtml;
+
+                } else {
+                    noTeamMessage.classList.remove('d-none'); // แสดงข้อความ "ไม่มีทีม" หากไม่มีข้อมูลทีม
+                }
+            }
+
+            /**
+             * ฟังก์ชันสำหรับแสดง Modal พร้อมดึงข้อมูลทีม
+             * จะถูกเรียกเมื่อคลิกปุ่มประเภทการแข่งขัน
+             * @param {string} competitionKey - คีย์ของประเภทการแข่งขันที่ถูกคลิก
+             */
+            function showTeamListModal(competitionKey) {
+                // ตั้งค่าหัวข้อและคำอธิบาย Modal ทันที
+                modalTitle.textContent = `รายชื่อทีม: ${competitionDetails[competitionKey].name}`;
+                modalDescription.textContent = competitionDetails[competitionKey].description; 
+
+                // ตรวจสอบว่าข้อมูลสำหรับประเภทการแข่งขันนี้ถูกโหลดแล้วหรือยัง
+                if (registeredTeams[competitionKey] && registeredTeams[competitionKey].length > 0) {
+                    renderTeamsInModal(competitionKey); // แสดงข้อมูลที่มีอยู่
+                } else {
+                    // ถ้ายังไม่ได้โหลด ให้ดึงข้อมูล
+                    fetchAndDisplayTeams(competitionKey);
+                }
+                
+                teamListModal.show(); // แสดง Modal ของ Bootstrap
+            }
+
+            /**
+             * ฟังก์ชันสำหรับสร้างและแสดงปุ่มประเภทการแข่งขัน (โหลดครั้งแรกของหน้า)
+             * จะค้นหาปุ่มทั้งหมดที่มี data-competition-key และเพิ่ม Event Listener
+             */
+            function renderCompetitionButtons() {
+                // ค้นหาปุ่มทั้งหมดที่มี class 'competition-button' หรืออยู่ใน 'competitionButtonsContainer'
+                // และเพิ่ม Event Listener ให้กับปุ่มเหล่านั้น
+                document.querySelectorAll('.competition-button').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const competitionKey = this.dataset.competitionKey;
+                        showTeamListModal(competitionKey);
+                    });
+                });
+            }
+
+            // เริ่มต้นการทำงาน: สร้างและเพิ่ม Event Listener ให้กับปุ่มประเภทการแข่งขัน
+            renderCompetitionButtons();
+        });
+    </script>
 <?= $this->endSection() ?>
