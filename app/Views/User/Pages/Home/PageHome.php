@@ -114,9 +114,9 @@
     <div class="container">
         <div class="row g-5 align-items-center">
             <div class="col-lg-6 text-center text-center">
-                <h1 class="text-white text-center mb-4 animated zoomIn" style="font-size: 3.7rem;">SCIENCE WEEK 2025
+                <h1 class="text-white text-center mb-4 animated zoomIn titel-text">SCIENCE WEEK 2025
                 </h1>
-                <h2 class="text-white text-center pb-3 animated zoomIn">งานมหกรรมวันวิทยาศาสตร์ <br> “วิทย์ยุคใหม่ AI
+                <h2 class="text-white text-center pb-3 animated zoomIn" style="text-shadow: 2px -4px 6px #020202;">งานมหกรรมวันวิทยาศาสตร์ <br> “วิทย์ยุคใหม่ AI
                     เปลี่ยนโลก” <br> 6 - 7 สิงหาคม 2568
                 </h2>
                 <a href="#service"

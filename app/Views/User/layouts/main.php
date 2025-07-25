@@ -22,7 +22,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-    
+
 
     <!-- Libraries Stylesheet -->
     <link href="<?=base_url()?>public/lib/animate/animate.min.css" rel="stylesheet">
@@ -33,16 +33,81 @@
 
     <!-- Template Stylesheet -->
     <link href="<?=base_url()?>public/css/style.css?v=1" rel="stylesheet">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CG2G30P3GD"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-CG2G30P3GD');
+    </script>
+
+    <!-- Google Tag Manager -->
+    <script>
+    (function(w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({
+            'gtm.start': new Date().getTime(),
+            event: 'gtm.js'
+        });
+        var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s),
+            dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src =
+            'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-N9SPNRFT');
+    </script>
+    <!-- End Google Tag Manager -->
+
+
     <style>
-        *{
-            font-family: 'K2D', sans-serif !important;
+    * {
+        font-family: 'K2D', sans-serif !important;
+    }
+
+
+    @media only screen and (max-width: 575.98px) {
+        .titel-text {
+            font-size: 2.7rem;
+            text-shadow: 2px -4px 6px #020202;
         }
+    }
+
+    @media (min-width: 576px) {
+        .titel-text {
+            font-size: 3.7rem;
+            text-shadow: 2px -4px 6px #020202;
+        }
+    }
+
+    @media (min-width: 768px) {
         
+    }
+
+    @media (min-width: 992px) {}
+
+    @media (min-width: 1200px) {}
+
+    @media (min-width: 1400px) {}
     </style>
     <?= $this->renderSection('css') ?>
 </head>
 
 <body>
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N9SPNRFT" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+
     <div class="bg-white p-0">
         <!-- Spinner Start -->
         <div id="spinner"
@@ -62,7 +127,7 @@
                     <img src="<?=base_url()?>public/img/logo/opj.png" alt="Logo" class="mx-2">
                     <img src="<?=base_url()?>public/img/logo/owtys.png" alt="Logo" class="mx-2">
                     <!-- <h1 class="m-0">สัปดาห์วิทยาศาสตร์ 2025</h1> -->
-                    
+
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <i class="bi bi-layout-text-sidebar"></i>
@@ -70,20 +135,30 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
                         <a href="<?=base_url()?>#service" class="nav-item nav-link">รายการแข่งขัน</a>
-                        <a href="#" onClick="showAlert()" class="nav-item nav-link">กำหนดการแข่งขัน</a>
+                        <a target="_blank"
+                            href="https://drive.google.com/file/d/18UPEatf5zr2nVi3EstNerVuRhdot_9cn/view?usp=sharing"
+                            class="nav-item nav-link">กำหนดการแข่งขัน</a>
                         <a href="#" onClick="showAlert()" class="nav-item nav-link">ตารางแข่งขัน</a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">ดาวน์โหลดเอกสาร</a>
                             <div class="dropdown-menu m-0">
                                 <a href="#" onClick="showAlert()" class="dropdown-item">หนังสือโครงการ</a>
-                                <a target="_blank" href="https://drive.google.com/file/d/1wyqherkET2vx1ouSoxtoDGXerD9CqSda/view?usp=sharing"  class="dropdown-item">หนังสือเชิญ</a>
+                                <a target="_blank"
+                                    href="https://drive.google.com/file/d/1wyqherkET2vx1ouSoxtoDGXerD9CqSda/view?usp=sharing"
+                                    class="dropdown-item">หนังสือเชิญ</a>
                                 <a href="<?=base_url()?>#service" class="dropdown-item">กติกาการแข่งขัน</a>
                                 <a href="#" onClick="showAlert()" class="dropdown-item">แผนผังการจัดงาน</a>
-                                <a href="#" onClick="showAlert()" class="dropdown-item">รายชื่อโรงแรม</a>
+                                <a target="_blank"
+                                    href="https://drive.google.com/file/d/1Bvvbz2Yu59txaxrJfRbA-4BJxZ0fssfH/view?usp=sharing"
+                                    class="dropdown-item">รายชื่อโรงแรม</a>
+                                    <a target="_blank"
+                                    href="https://drive.google.com/drive/folders/1a1bGd334orqDHIOHtDAeOJZXjUAlrzym"
+                                    class="dropdown-item">หนังสือเปลี่ยนตัวผู้แข่งขัน</a>
                             </div>
                         </div>
                         <a href="#" onClick="showAlert()" class="nav-item nav-link">ผลการการแข่งขัน</a>
-                        <a href="<?=base_url('Register/ListNameTeams')?>"  class="nav-item nav-link">รายชื่อทีมสมัครแข่งขัน</a>
+                        <a href="<?=base_url('Register/ListNameTeams')?>"
+                            class="nav-item nav-link">รายชื่อทีมสมัครแข่งขัน</a>
                     </div>
                     <!-- <a href="#service" class="btn btn-light rounded-pill text-primary py-2 px-4 ms-lg-5">สมัครแข่งขัน</a> -->
                 </div>
@@ -107,12 +182,15 @@
                     <div class="col-md-6 col-lg-3">
                         <h5 class="text-white mb-4">สัปดาห์วิทยาศาสตร์ 2568</h5>
                         <p><i class="bi bi-geo-alt"></i> 160 ม.1 ต.นครสวรรค์ออก อ.เมือง จ.นครสวรรค์ 60000</p>
-                        
+
                         <p><i class="bi bi-telephone"></i> 056-009-667</p>
                         <p><i class="bi bi-envelope"></i> skjns160@skj.ac.th</p>
                         <div class="d-flex pt-2">
-                            <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/SKJNS160"><i class="bi bi-facebook"></i></a>
-                            <a class="btn btn-outline-light btn-social" href="https://www.youtube.com/channel/UC7p4cQQuIFLyrF68p7JbWDw"><i class="bi bi-youtube"></i></a>
+                            <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/SKJNS160"><i
+                                    class="bi bi-facebook"></i></a>
+                            <a class="btn btn-outline-light btn-social"
+                                href="https://www.youtube.com/channel/UC7p4cQQuIFLyrF68p7JbWDw"><i
+                                    class="bi bi-youtube"></i></a>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3">
@@ -125,7 +203,7 @@
                     </div>
                     <div class="col-md-6 col-lg-6">
                         <h4 class="text-white mb-4">กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี</h5>
-                        <p><i class="bi bi-geo"></i> โรงเรียนสวนกุหลาบวิทยาลัย (จิรประวัติ) นครสวรรค์</p>
+                            <p><i class="bi bi-geo"></i> โรงเรียนสวนกุหลาบวิทยาลัย (จิรประวัติ) นครสวรรค์</p>
                     </div>
                 </div>
             </div>
@@ -136,8 +214,8 @@
                             &copy; <a class="border-bottom" href="#">SciWeek2025</a>, All Right Reserved.
 
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Author By <a class="border-bottom" href="https://www.facebook.com/dekpiano">Dekpiano</a> 
-                          
+                            Author By <a class="border-bottom" href="https://www.facebook.com/dekpiano">Dekpiano</a>
+
                         </div>
                         <!-- <div class="col-md-6 text-center text-md-end">
                             <div class="footer-menu">
