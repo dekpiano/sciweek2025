@@ -156,7 +156,7 @@
                                     class="dropdown-item">หนังสือเปลี่ยนตัวผู้แข่งขัน</a>
                             </div>
                         </div>
-                        <a href="#" onClick="showAlert()" class="nav-item nav-link">ผลการการแข่งขัน</a>
+                        <a href="<?=base_url('Register/Certificate')?>" class="nav-item nav-link">ผลการแข่งขัน</a>
                         <a href="<?=base_url('Register/ListNameTeams')?>"
                             class="nav-item nav-link">รายชื่อทีมสมัครแข่งขัน</a>
                     </div>

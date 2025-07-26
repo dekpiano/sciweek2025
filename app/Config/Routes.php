@@ -32,6 +32,7 @@ $routes->set404Override();
 $routes->get('/', 'ControlUserHome::index');
 
 $routes->get('/Register/ListNameTeams', 'ControlUserListNameTeams::index');
+$routes->get('/Register/Certificate', 'ControlUserCertificate::index');
 /*
  * --------------------------------------------------------------------
  * Additional Routing
