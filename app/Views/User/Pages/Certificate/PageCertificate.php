@@ -133,9 +133,6 @@ tr:hover {
         grid-template-columns: 1fr;
     }
 
-    .btn {
-        width: 100%;
-    }
 
     table,
     thead,
@@ -258,14 +255,15 @@ tr:hover {
         <img src="<?=base_url('public/img/certificate/ctfc.png')?>" alt="Certificate Background"
             style="width:100%; height:100%; position:absolute; top:0; left:0; z-index:-1;">
 
-        <p id="certName" style="font-size: 2.5rem; font-weight: bold; color: #0071bc; margin-top: 130px;">
+        <p id="certName" style="font-size: 2.5rem; font-weight: bold; color: #0071bc; margin-top: 110px;">
             {{ชื่อ-นามสกุล}}</p>
 
-        <p id="certAwardLevel" style="font-size: 1.6rem; font-weight: bold; color: #0071bc; margin-top: 0px;">
-            ได้รับรางวัล {{ระดับรางวัล}}</p>
+        <div id="certAwardLevel" style="font-size: 1.6rem; font-weight: bold; color: #0071bc; margin-top: -15px;">
+            ได้รับรางวัล {{ระดับรางวัล}}</div>
+        <div style="font-size: 1.6rem; font-weight: bold; color: #0071bc; margin-top: -5px;"><span
+                id="certActivity">{{วันที่}}</span></div>
+        <div id="certDate" style="font-size: 1.1rem; color: #0071bc; margin-top: -0px;">{{ชื่อกิจกรรม}}</div>
 
-        <div id="certActivity" style="font-size: 1.1rem; color: #0071bc; margin-top: -18px;">{{ชื่อกิจกรรม}}</div>
-        <!-- <p style="margin-top: 20px;">เมื่อวันที่ <span id="certDate">{{วันที่}}</span></p> -->
 
         <!-- สามารถเพิ่ม CSS ภายใน <style> tag หรือ inline style ได้ตามต้องการ -->
     </div>
@@ -279,592 +277,707 @@ tr:hover {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-  <script>
-        console.log("Script started.");
+<script>
+//  console.log("Script started.");
 
-        // --- Configuration Variables (กรุณาแก้ไขค่าเหล่านี้) ---
-        // แทนที่ด้วย Web app URL ที่คุณได้จากการ Deploy Google Apps Script
-        const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwn4eNrcjifbhK3-OJZKR7GvNCUApQrr-G5cQuXN1_8_DsQsVSdJ515P4R_0tC6NuDL/exec'; 
-        // แทนที่ด้วย ID ของ Google Spreadsheet ของคุณ
-        const SPREADSHEET_ID = '12t7UCzg6XrhA6LsKZ9yeL9OCho_XRHSF9nij_gRaqFE'; 
-        // --- End of Configuration Variables ---
+// --- Configuration Variables (กรุณาแก้ไขค่าเหล่านี้) ---
+// แทนที่ด้วย Web app URL ที่คุณได้จากการ Deploy Google Apps Script
+const APPS_SCRIPT_WEB_APP_URL =
+    'https://script.google.com/macros/s/AKfycbwn4eNrcjifbhK3-OJZKR7GvNCUApQrr-G5cQuXN1_8_DsQsVSdJ515P4R_0tC6NuDL/exec';
+// แทนที่ด้วย ID ของ Google Spreadsheet ของคุณ
+const SPREADSHEET_ID = '12t7UCzg6XrhA6LsKZ9yeL9OCho_XRHSF9nij_gRaqFE';
+// --- End of Configuration Variables ---
 
-        // Get references to elements
-        const competitionSelect = document.getElementById('competitionSelect');
-        const dataTableSection = document.getElementById('dataTableSection'); // Reference to the table section
-        const loadingSpinner = document.getElementById('loadingSpinner'); // Reference to the loading spinner
+// Get references to elements
+const competitionSelect = document.getElementById('competitionSelect');
+const dataTableSection = document.getElementById('dataTableSection'); // Reference to the table section
+const loadingSpinner = document.getElementById('loadingSpinner'); // Reference to the loading spinner
 
-        // Get references to certificate display elements (hidden template)
-        const certificateTemplate = document.getElementById('certificateTemplate');
-        const certName = certificateTemplate.querySelector('#certName');
-        const certActivity = certificateTemplate.querySelector('#certActivity');
-        // const certDate = certificateTemplate.querySelector('#certDate'); // Commented out as per user's request
-        const certAwardLevel = certificateTemplate.querySelector('#certAwardLevel');
-        // const certSpecialMessage = certificateTemplate.querySelector('#certSpecialMessage'); // Removed: Reference to special message element
+// Get references to certificate display elements (hidden template)
+const certificateTemplate = document.getElementById('certificateTemplate');
+const certName = certificateTemplate.querySelector('#certName');
+const certActivity = certificateTemplate.querySelector('#certActivity');
+// const certDate = certificateTemplate.querySelector('#certDate'); // Commented out as per user's request
+const certAwardLevel = certificateTemplate.querySelector('#certAwardLevel');
+// const certSpecialMessage = certificateTemplate.querySelector('#certSpecialMessage'); // Removed: Reference to special message element
 
-        let sheetData = []; // To store data fetched from the currently selected Google Sheet
+let sheetData = []; // To store data fetched from the currently selected Google Sheet
 
-        /**
-         * Shows the main loading spinner.
-         */
-        function showLoadingSpinner() {
-            loadingSpinner.classList.add('show');
-        }
+/**
+ * Shows the main loading spinner.
+ */
+function showLoadingSpinner() {
+    loadingSpinner.classList.add('show');
+}
 
-        /**
-         * Hides the main loading spinner.
-         */
-        function hideLoadingSpinner() {
-            loadingSpinner.classList.remove('show');
-        }
+/**
+ * Hides the main loading spinner.
+ */
+function hideLoadingSpinner() {
+    loadingSpinner.classList.remove('show');
+}
 
-        /**
-         * Fetches the list of sheet names from the Google Spreadsheet via Apps Script.
-         */
-        async function loadCompetitionList() {
-            console.log("loadCompetitionList called.");
-            
-            if (APPS_SCRIPT_WEB_APP_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE' ||
-                SPREADSHEET_ID === 'YOUR_GOOGLE_SPREADSHEET_ID_HERE') {
-                alert('กรุณาแก้ไขค่า APPS_SCRIPT_WEB_APP_URL และ SPREADSHEET_ID ในโค้ด JavaScript ก่อน');
-                competitionSelect.innerHTML = '<option value="">กรุณาตั้งค่า URL และ ID</option>';
-                return;
+/**
+ * Fetches the list of sheet names from the Google Spreadsheet via Apps Script.
+ */
+async function loadCompetitionList() {
+    // console.log("loadCompetitionList called.");
+
+    if (APPS_SCRIPT_WEB_APP_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE' ||
+        SPREADSHEET_ID === 'YOUR_GOOGLE_SPREADSHEET_ID_HERE') {
+        alert('กรุณาแก้ไขค่า APPS_SCRIPT_WEB_APP_URL และ SPREADSHEET_ID ในโค้ด JavaScript ก่อน');
+        competitionSelect.innerHTML = '<option value="">กรุณาตั้งค่า URL และ ID</option>';
+        return;
+    }
+
+    showLoadingSpinner(); // Show spinner
+    competitionSelect.disabled = true;
+    competitionSelect.innerHTML = '<option value="">กำลังโหลดรายการแข่ง...</option>';
+    dataTableSection.classList.add('d-none'); // Ensure table is hidden initially
+    // Set initial message for the table section when no sheet is selected
+    dataTableSection.innerHTML =
+        '<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน</h2><div class="text-center text-muted py-4">กรุณาเลือกรายการแข่ง</div>';
+
+
+    try {
+        const url = new URL(APPS_SCRIPT_WEB_APP_URL);
+        url.searchParams.append('spreadsheetId', SPREADSHEET_ID);
+        url.searchParams.append('action', 'get_sheet_names'); // Request sheet names
+
+        const response = await fetch(url.toString());
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            const sheetNames = result.data;
+            populateCompetitionSelect(sheetNames);
+            // console.log('ดึงรายการแข่งสำเร็จแล้ว!');
+            // No auto-loading of data from the first sheet here, user will select
+            if (sheetNames.length === 0) {
+                dataTableSection.innerHTML =
+                    '<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน</h2><div class="text-center text-muted py-4">ไม่พบรายการแข่งใน Spreadsheet</div>';
             }
+        } else {
+            alert('เกิดข้อผิดพลาดในการดึงรายการแข่ง: ' + result.message);
+            console.error('Error from Apps Script (get_sheet_names):', result.message);
+            competitionSelect.innerHTML = '<option value="">เกิดข้อผิดพลาดในการโหลด</option>';
+            dataTableSection.innerHTML =
+                '<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน</h2><div class="text-center text-danger py-4">เกิดข้อผิดพลาดในการดึงรายการแข่ง: ' +
+                result.message + '</div>';
+        }
+    } catch (error) {
+        alert('ไม่สามารถเชื่อมต่อกับ Apps Script ได้ หรือเกิดข้อผิดพลาดเครือข่าย: ' + error.message);
+        console.error('Network or Fetch error (get_sheet_names):', error);
+        competitionSelect.innerHTML = '<option value="">ไม่สามารถเชื่อมต่อได้</option>';
+        dataTableSection.innerHTML =
+            '<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน</h2><div class="text-center text-danger py-4">ไม่สามารถเชื่อมต่อได้: ' +
+            error.message + '</div>';
+    } finally {
+        competitionSelect.disabled = false;
+        hideLoadingSpinner(); // Hide spinner
+    }
+}
 
-            showLoadingSpinner(); // Show spinner
-            competitionSelect.disabled = true;
-            competitionSelect.innerHTML = '<option value="">กำลังโหลดรายการแข่ง...</option>';
-            dataTableSection.classList.add('d-none'); // Ensure table is hidden initially
-            // Set initial message for the table section when no sheet is selected
-            dataTableSection.innerHTML = '<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน</h2><div class="text-center text-muted py-4">กรุณาเลือกรายการแข่ง</div>';
+/**
+ * Populates the competition select dropdown with sheet names.
+ * @param {Array<string>} sheetNames An array of sheet names.
+ */
+function populateCompetitionSelect(sheetNames) {
+    competitionSelect.innerHTML = '<option value="">-- เลือกรายการแข่ง --</option>';
+    sheetNames.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        competitionSelect.appendChild(option);
+    });
+}
 
+/**
+ * Fetches data from the selected Google Sheet via the Apps Script Web App.
+ * @param {string} sheetName The name of the sheet to fetch data from.
+ */
+async function fetchSheetData(sheetName) {
+    //console.log(`fetchSheetData called for sheet: ${sheetName}`);
 
-            try {
-                const url = new URL(APPS_SCRIPT_WEB_APP_URL);
-                url.searchParams.append('spreadsheetId', SPREADSHEET_ID);
-                url.searchParams.append('action', 'get_sheet_names'); // Request sheet names
+    if (!sheetName) {
+        dataTableSection.classList.add('d-none'); // Hide table if no sheet selected
+        dataTableSection.innerHTML =
+            '<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน</h2><div class="text-center text-muted py-4">กรุณาเลือกรายการแข่ง</div>';
+        return;
+    }
 
-                const response = await fetch(url.toString());
-                const result = await response.json();
+    showLoadingSpinner(); // Show spinner
+    dataTableSection.classList.add('d-none'); // Hide table while loading new data
+    // Clear previous content of dataTableSection and show loading message
+    dataTableSection.innerHTML = '<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน: ' + sheetName +
+        '</h2><div class="text-center text-muted py-4">กำลังโหลดข้อมูลจาก ' + sheetName + '...</div>';
 
-                if (result.status === 'success') {
-                    const sheetNames = result.data;
-                    populateCompetitionSelect(sheetNames);
-                    console.log('ดึงรายการแข่งสำเร็จแล้ว!');
-                    // No auto-loading of data from the first sheet here, user will select
-                    if (sheetNames.length === 0) {
-                        dataTableSection.innerHTML = '<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน</h2><div class="text-center text-muted py-4">ไม่พบรายการแข่งใน Spreadsheet</div>';
-                    }
-                } else {
-                    alert('เกิดข้อผิดพลาดในการดึงรายการแข่ง: ' + result.message);
-                    console.error('Error from Apps Script (get_sheet_names):', result.message);
-                    competitionSelect.innerHTML = '<option value="">เกิดข้อผิดพลาดในการโหลด</option>';
-                    dataTableSection.innerHTML = '<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน</h2><div class="text-center text-danger py-4">เกิดข้อผิดพลาดในการดึงรายการแข่ง: ' + result.message + '</div>';
+    try {
+        const url = new URL(APPS_SCRIPT_WEB_APP_URL);
+        url.searchParams.append('spreadsheetId', SPREADSHEET_ID);
+        url.searchParams.append('sheetName', sheetName);
+        url.searchParams.append('action', 'get_data'); // Request data from a specific sheet
+
+        const response = await fetch(url.toString());
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            // เก็บข้อมูลที่ได้มา (ข้ามแถวแรกที่เป็น Header)
+            sheetData = result.data.slice(1);
+            renderDataTable(sheetData, result.data[
+            0]); // Pass headers if needed, though not directly used in this renderDataTable
+            dataTableSection.classList.remove('d-none'); // Show table after data is loaded
+            // console.log(`ดึงข้อมูลจาก ${sheetName} สำเร็จแล้ว!`);
+        } else {
+            alert('เกิดข้อผิดพลาดในการดึงข้อมูลจาก ' + sheetName + ': ' + result.message);
+            console.error('Error from Apps Script (get_data):', result.message);
+            dataTableSection.innerHTML =
+                `<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน: ${sheetName}</h2><div class="text-center text-danger py-4">เกิดข้อผิดพลาดในการดึงข้อมูล: ${result.message}</div>`;
+            dataTableSection.classList.remove('d-none'); // Show section with error message
+        }
+    } catch (error) {
+        alert('ไม่สามารถเชื่อมต่อกับ Apps Script ได้ หรือเกิดข้อผิดพลาดเครือข่าย: ' + error.message);
+        console.error('Network or Fetch error (get_data):', error);
+        dataTableSection.innerHTML =
+            `<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน: ${sheetName}</h2><div class="text-center text-danger py-4">ไม่สามารถเชื่อมต่อได้: ${error.message}</div>`;
+        dataTableSection.classList.remove('d-none'); // Show section with error message
+    } finally {
+        hideLoadingSpinner(); // Hide spinner
+    }
+}
+
+/**
+ * Renders the fetched data into the HTML table, grouped by class level and separated for Team Supervisors and Participation.
+ * @param {Array<Array<string>>} data An array of rows, where each row is an array of cell values.
+ * @param {Array<string>} headers An array of header names (not directly used for rendering in this version).
+ */
+function renderDataTable(data, headers) {
+    console.log("renderDataTable called with data:", data);
+    const selectedCompetition = competitionSelect.value;
+    const isScienceDrawingCompetition = selectedCompetition === 'การแข่งขันภาพวาดทางวิทยาศาสตร์';
+
+    // Clear all content within dataTableSection except the main title
+    const mainTitle = dataTableSection.querySelector('h2');
+    dataTableSection.innerHTML = ''; // Clear everything
+    if (mainTitle) { // Re-add the main title
+        dataTableSection.appendChild(mainTitle);
+    }
+
+    if (data.length === 0) {
+        const noDataMessage = document.createElement('div');
+        noDataMessage.className = 'text-center text-muted py-4';
+        noDataMessage.textContent = 'ไม่พบผลการแข่งขันในรายการแข่งนี้';
+        dataTableSection.appendChild(noDataMessage);
+        return;
+    }
+
+    // Separate data into students, team supervisors, and participation
+    const studentData = [];
+    const supervisorData = [];
+    const participationData = []; // New array for 'เข้าร่วม'
+
+    data.forEach(row => {
+        const participantType = row[5] || ''; // Column F is Participant Type (index 5)
+        const awardLevel = row[3] || ''; // Column D is Award Level (index 3)
+
+        if (participantType === 'ผู้คุมทีม') {
+            supervisorData.push(row);
+        } else if (awardLevel === 'เข้าร่วม') { // Check for 'เข้าร่วม' award
+            participationData.push(row);
+        } else {
+            studentData.push(row);
+        }
+    });
+
+    let hasContentToDisplay = false; // Flag to check if any table content is rendered
+
+    // Group student data by Class Level (assuming it's in Column E, index 4)
+    const groupedStudentData = studentData.reduce((acc, row) => {
+        const classLevel = row[4] || 'ไม่ระบุระดับชั้น';
+        if (!acc[classLevel]) {
+            acc[classLevel] = [];
+        }
+        acc[classLevel].push(row);
+        return acc;
+    }, {});
+
+    // Define a custom order for class levels
+    const classLevelOrder = {
+        'ระดับชั้นประถมศึกษาตอนปลาย (ป.4 - ป.6)': 1,
+        'ระดับมัธยมศึกษาตอนต้น (ม.1 - ม.3)': 2,
+        'ระดับมัธยมศึกษาตอนปลาย (ม.4 - ม.6)': 3,
+        'ระดับศูนย์ส่งเสริมการเรียนรู้': 4,
+        'อื่นๆ': 98,
+        'ไม่ระบุระดับชั้น': 99
+    };
+
+    // Sort class levels based on the defined order
+    const sortedClassLevels = Object.keys(groupedStudentData).sort((a, b) => {
+        return (classLevelOrder[a] || 100) - (classLevelOrder[b] || 100);
+    });
+
+    // Define a custom order for award levels
+    const awardLevelOrder = {
+        'ชนะเลิศ': 1,
+        'รองชนะเลิศอันดับ 1': 2,
+        'รองชนะเลิศอันดับ 2': 3,
+        'ชมเชย': 4,
+        'เข้าร่วม': 5, // Ensure 'เข้าร่วม' has a defined order
+        'ไม่ระบุระดับรางวัล': 99
+    };
+
+    // Render tables for students (grouped by class level)
+    sortedClassLevels.forEach(classLevel => {
+        console.log(`Processing class level: ${classLevel}`);
+        // Skip rendering if classLevel is 'ไม่ระบุระดับชั้น'
+        if (classLevel === 'ไม่ระบุระดับชั้น') {
+            console.log(`Skipping rendering for 'ไม่ระบุระดับชั้น'`);
+            return;
+        }
+
+        let levelData = groupedStudentData[classLevel];
+
+        // Sort data within each class level by Award Level
+        levelData.sort((a, b) => {
+            const awardA = a[3] || 'ไม่ระบุระดับรางวัล'; // Column D is Award Level (index 3)
+            const awardB = b[3] || 'ไม่ระบุระดับรางวัล';
+            return (awardLevelOrder[awardA] || 100) - (awardLevelOrder[awardB] || 100);
+        });
+
+        if (levelData.length > 0) { // Only render card if there's data for this class level
+            hasContentToDisplay = true;
+            const levelCard = document.createElement('div');
+            levelCard.className = 'card p-4 shadow-sm mb-4';
+
+            const levelTitle = document.createElement('h3');
+            levelTitle.className = 'h6 mb-3 text-primary text-center';
+            levelTitle.textContent = `ระดับชั้น: ${classLevel}`;
+            levelCard.appendChild(levelTitle);
+
+            const tableResponsiveDiv = document.createElement('div');
+            tableResponsiveDiv.className = 'table-responsive rounded shadow-sm';
+
+            const table = document.createElement('table');
+            table.className = 'table table-striped table-hover mb-0';
+
+            const thead = document.createElement('thead');
+            if (isScienceDrawingCompetition) {
+                thead.innerHTML = `
+                            <tr>
+                                <th>ระดับรางวัล</th>
+                                <th>ระดับ</th>
+                                <th>คะแนน</th>
+                                <th>ชื่อ-นามสกุล</th>
+                                <th>ผู้ร่วมแข่งขัน</th>
+                                <th class="action-cell">ดาวน์โหลด</th>
+                            </tr>
+                        `;
+            } else {
+                thead.innerHTML = `
+                            <tr>
+                                <th>ระดับรางวัล</th>
+                                <th>ชื่อ-นามสกุล</th>
+                                <th>ผู้ร่วมแข่งขัน</th>
+                                <th class="action-cell">ดาวน์โหลด</th>
+                            </tr>
+                        `;
+            }
+            table.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+            levelData.forEach((row, index) => {
+                const tr = document.createElement('tr');
+
+                const tdAwardLevel = document.createElement('td');
+                tdAwardLevel.textContent = row[3] || '-';
+                tdAwardLevel.setAttribute('data-label', 'ระดับรางวัล');
+                tr.appendChild(tdAwardLevel);
+
+                if (isScienceDrawingCompetition) {
+                    const tdLevel = document.createElement('td');
+                    tdLevel.textContent = row[6] || '-';
+                    tdLevel.setAttribute('data-label', 'ระดับ');
+                    tr.appendChild(tdLevel);
+
+                    const tdScore = document.createElement('td');
+                    tdScore.textContent = row[7] || '-'; // Assuming score is at index 6
+                    tdScore.setAttribute('data-label', 'คะแนน');
+                    tr.appendChild(tdScore);
                 }
-            } catch (error) {
-                alert('ไม่สามารถเชื่อมต่อกับ Apps Script ได้ หรือเกิดข้อผิดพลาดเครือข่าย: ' + error.message);
-                console.error('Network or Fetch error (get_sheet_names):', error);
-                competitionSelect.innerHTML = '<option value="">ไม่สามารถเชื่อมต่อได้</option>';
-                dataTableSection.innerHTML = '<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน</h2><div class="text-center text-danger py-4">ไม่สามารถเชื่อมต่อได้: ' + error.message + '</div>';
-            } finally {
-                competitionSelect.disabled = false;
-                hideLoadingSpinner(); // Hide spinner
-            }
-        }
 
-        /**
-         * Populates the competition select dropdown with sheet names.
-         * @param {Array<string>} sheetNames An array of sheet names.
-         */
-        function populateCompetitionSelect(sheetNames) {
-            competitionSelect.innerHTML = '<option value="">-- เลือกรายการแข่ง --</option>';
-            sheetNames.forEach(name => {
-                const option = document.createElement('option');
-                option.value = name;
-                option.textContent = name;
-                competitionSelect.appendChild(option);
+                const tdName = document.createElement('td');
+                tdName.textContent = row[0] || '-';
+                tdName.setAttribute('data-label', 'ชื่อ-นามสกุล');
+                tr.appendChild(tdName);
+
+                const tdParticipantType = document.createElement('td');
+                tdParticipantType.textContent = row[5] || '-';
+                tdParticipantType.setAttribute('data-label', 'ผู้ร่วมแข่งขัน');
+                tr.appendChild(tdParticipantType);
+
+                const tdAction = document.createElement('td');
+                tdAction.className = 'action-cell';
+                tdAction.setAttribute('data-label', 'ดาวน์โหลด');
+
+                const btnGroup = document.createElement('div');
+                btnGroup.className = 'btn-group';
+                btnGroup.setAttribute('role', 'group');
+
+                const downloadBtn = document.createElement('button');
+                downloadBtn.textContent = 'ดาวน์โหลดเกียรติบัตร';
+                downloadBtn.className = 'btn btn-secondary-custom btn-sm download-btn';
+                downloadBtn.dataset.name = row[0] || '';
+                downloadBtn.dataset.activity = row[1] || '';
+                downloadBtn.dataset.date = row[2] || '';
+                downloadBtn.dataset.awardLevel = row[3] || '';
+                downloadBtn.dataset.classLevel = row[4] || '';
+                downloadBtn.dataset.participantType = row[5] || '';
+                if (isScienceDrawingCompetition) {
+                    downloadBtn.dataset.tdLevel = row[6] || '';
+                }
+                downloadBtn.addEventListener('click', downloadIndividualCertificate);
+                btnGroup.appendChild(downloadBtn);
+
+                tdAction.appendChild(btnGroup);
+                tr.appendChild(tdAction);
+
+                tbody.appendChild(tr);
             });
+            table.appendChild(tbody);
+            tableResponsiveDiv.appendChild(table);
+            levelCard.appendChild(tableResponsiveDiv);
+            dataTableSection.appendChild(levelCard);
         }
+    });
 
-        /**
-         * Fetches data from the selected Google Sheet via the Apps Script Web App.
-         * @param {string} sheetName The name of the sheet to fetch data from.
-         */
-        async function fetchSheetData(sheetName) {
-            console.log(`fetchSheetData called for sheet: ${sheetName}`);
-            
-            if (!sheetName) {
-                dataTableSection.classList.add('d-none'); // Hide table if no sheet selected
-                dataTableSection.innerHTML = '<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน</h2><div class="text-center text-muted py-4">กรุณาเลือกรายการแข่ง</div>';
-                return;
-            }
+    // Render a separate table for Team Supervisors if data exists
+    if (supervisorData.length > 0) {
+        hasContentToDisplay = true;
+        const supervisorCard = document.createElement('div');
+        supervisorCard.className = 'card p-4 shadow-sm mb-4 mt-5';
 
-            showLoadingSpinner(); // Show spinner
-            dataTableSection.classList.add('d-none'); // Hide table while loading new data
-            // Clear previous content of dataTableSection and show loading message
-            dataTableSection.innerHTML = '<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน: ' + sheetName + '</h2><div class="text-center text-muted py-4">กำลังโหลดข้อมูลจาก ' + sheetName + '...</div>';
+        const supervisorTitle = document.createElement('h3');
+        supervisorTitle.className = 'h6 mb-3 text-primary text-center';
+        supervisorTitle.textContent = `ผู้คุมทีม`;
+        supervisorCard.appendChild(supervisorTitle);
 
-            try {
-                const url = new URL(APPS_SCRIPT_WEB_APP_URL);
-                url.searchParams.append('spreadsheetId', SPREADSHEET_ID);
-                url.searchParams.append('sheetName', sheetName);
-                url.searchParams.append('action', 'get_data'); // Request data from a specific sheet
+        const tableResponsiveDiv = document.createElement('div');
+        tableResponsiveDiv.className = 'table-responsive rounded shadow-sm';
 
-                const response = await fetch(url.toString());
-                const result = await response.json();
+        const table = document.createElement('table');
+        table.className = 'table table-striped table-hover mb-0';
 
-                if (result.status === 'success') {
-                    // เก็บข้อมูลที่ได้มา (ข้ามแถวแรกที่เป็น Header)
-                    sheetData = result.data.slice(1); 
-                    renderDataTable(sheetData, result.data[0]); // Pass headers if needed, though not directly used in this renderDataTable
-                    dataTableSection.classList.remove('d-none'); // Show table after data is loaded
-                    console.log(`ดึงข้อมูลจาก ${sheetName} สำเร็จแล้ว!`);
-                } else {
-                    alert('เกิดข้อผิดพลาดในการดึงข้อมูลจาก ' + sheetName + ': ' + result.message);
-                    console.error('Error from Apps Script (get_data):', result.message);
-                    dataTableSection.innerHTML = `<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน: ${sheetName}</h2><div class="text-center text-danger py-4">เกิดข้อผิดพลาดในการดึงข้อมูล: ${result.message}</div>`;
-                    dataTableSection.classList.remove('d-none'); // Show section with error message
-                }
-            } catch (error) {
-                alert('ไม่สามารถเชื่อมต่อกับ Apps Script ได้ หรือเกิดข้อผิดพลาดเครือข่าย: ' + error.message);
-                console.error('Network or Fetch error (get_data):', error);
-                dataTableSection.innerHTML = `<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน: ${sheetName}</h2><div class="text-center text-danger py-4">ไม่สามารถเชื่อมต่อได้: ${error.message}</div>`;
-                dataTableSection.classList.remove('d-none'); // Show section with error message
-            } finally {
-                hideLoadingSpinner(); // Hide spinner
-            }
-        }
-
-        /**
-         * Renders the fetched data into the HTML table, grouped by class level and separated for Team Supervisors and Participation.
-         * @param {Array<Array<string>>} data An array of rows, where each row is an array of cell values.
-         * @param {Array<string>} headers An array of header names (not directly used for rendering in this version).
-         */
-        function renderDataTable(data, headers) {
-            console.log("renderDataTable called with data:", data);
-            
-            // Clear all content within dataTableSection except the main title
-            const mainTitle = dataTableSection.querySelector('h2');
-            dataTableSection.innerHTML = ''; // Clear everything
-            if (mainTitle) { // Re-add the main title
-                dataTableSection.appendChild(mainTitle);
-            }
-
-            if (data.length === 0) {
-                const noDataMessage = document.createElement('div');
-                noDataMessage.className = 'text-center text-muted py-4';
-                noDataMessage.textContent = 'ไม่พบผลการแข่งขันในรายการแข่งนี้';
-                dataTableSection.appendChild(noDataMessage);
-                return;
-            }
-
-            // Separate data into students, team supervisors, and participation
-            const studentData = [];
-            const supervisorData = [];
-            const participationData = []; // New array for 'เข้าร่วม'
-
-            data.forEach(row => {
-                const participantType = row[5] || ''; // Column F is Participant Type (index 5)
-                const awardLevel = row[3] || ''; // Column D is Award Level (index 3)
-
-                if (participantType === 'ผู้คุมทีม') {
-                    supervisorData.push(row);
-                } else if (awardLevel === 'เข้าร่วม') { // Check for 'เข้าร่วม' award
-                    participationData.push(row);
-                }
-                else {
-                    studentData.push(row);
-                }
-            });
-
-            let hasContentToDisplay = false; // Flag to check if any table content is rendered
-
-            // Group student data by Class Level (assuming it's in Column E, index 4)
-            const groupedStudentData = studentData.reduce((acc, row) => {
-                const classLevel = row[4] || 'ไม่ระบุระดับชั้น'; 
-                if (!acc[classLevel]) {
-                    acc[classLevel] = [];
-                }
-                acc[classLevel].push(row);
-                return acc;
-            }, {});
-
-            // Define a custom order for class levels
-            const classLevelOrder = {
-                'ระดับชั้นประถมศึกษาตอนปลาย (ป.4 - ป.6)': 1,
-                'ระดับมัธยมศึกษาตอนต้น (ม.1 - ม.3)': 2,
-                'ระดับมัธยมศึกษาตอนปลาย (ม.4 - ม.6)': 3,
-                'อื่นๆ': 98, 
-                'ไม่ระบุระดับชั้น': 99 
-            };
-
-            // Sort class levels based on the defined order
-            const sortedClassLevels = Object.keys(groupedStudentData).sort((a, b) => {
-                return (classLevelOrder[a] || 100) - (classLevelOrder[b] || 100);
-            });
-
-            // Define a custom order for award levels
-            const awardLevelOrder = {
-                'ชนะเลิศ': 1,
-                'รองชนะเลิศอันดับ 1': 2,
-                'รองชนะเลิศอันดับ 2': 3,
-                'ชมเชย': 4,
-                'เข้าร่วม': 5, // Ensure 'เข้าร่วม' has a defined order
-                'ไม่ระบุระดับรางวัล': 99 
-            };
-
-            // Render tables for students (grouped by class level)
-            sortedClassLevels.forEach(classLevel => {
-                // Skip rendering if classLevel is 'ไม่ระบุระดับชั้น'
-                if (classLevel === 'ไม่ระบุระดับชั้น') {
-                    return; 
-                }
-
-                let levelData = groupedStudentData[classLevel]; 
-
-                // Sort data within each class level by Award Level
-                levelData.sort((a, b) => {
-                    const awardA = a[3] || 'ไม่ระบุระดับรางวัล'; // Column D is Award Level (index 3)
-                    const awardB = b[3] || 'ไม่ระบุระดับรางวัล';
-                    return (awardLevelOrder[awardA] || 100) - (awardLevelOrder[awardB] || 100);
-                });
-
-                if (levelData.length > 0) { // Only render card if there's data for this class level
-                    hasContentToDisplay = true;
-                    const levelCard = document.createElement('div');
-                    levelCard.className = 'card p-4 shadow-sm mb-4'; 
-
-                    const levelTitle = document.createElement('h3');
-                    levelTitle.className = 'h6 mb-3 text-primary text-center'; 
-                    levelTitle.textContent = `ระดับชั้น: ${classLevel}`; 
-                    levelCard.appendChild(levelTitle);
-
-                    const tableResponsiveDiv = document.createElement('div');
-                    tableResponsiveDiv.className = 'table-responsive rounded shadow-sm';
-
-                    const table = document.createElement('table');
-                    table.className = 'table table-striped table-hover mb-0';
-
-                    const thead = document.createElement('thead');
-                    thead.innerHTML = `
+        const thead = document.createElement('thead');
+        if (isScienceDrawingCompetition) {
+            thead.innerHTML = `
                         <tr>
-                            <th>ระดับรางวัล</th> 
+                            <th>ระดับรางวัล</th>
+                            <th>ระดับ</th>
+                            <th>คะแนน</th>
                             <th>ชื่อ-นามสกุล</th>
-                            <th>ผู้ร่วมแข่งขัน</th> 
-                            <th class="action-cell">ดาวน์โหลด</th> 
+                            <th>ผู้ร่วมแข่งขัน</th>
+                            <th class="action-cell">ดาวน์โหลด</th>
                         </tr>
                     `;
-                    table.appendChild(thead);
-
-                    const tbody = document.createElement('tbody');
-                    levelData.forEach((row, index) => {
-                        const tr = document.createElement('tr');
-
-                        const tdAwardLevel = document.createElement('td');
-                        tdAwardLevel.textContent = row[3] || '-'; 
-                        tdAwardLevel.setAttribute('data-label', 'ระดับรางวัล');
-                        tr.appendChild(tdAwardLevel);
-
-                        const tdName = document.createElement('td');
-                        tdName.textContent = row[0] || '-'; 
-                        tdName.setAttribute('data-label', 'ชื่อ-นามสกุล');
-                        tr.appendChild(tdName);
-
-                        const tdParticipantType = document.createElement('td');
-                        tdParticipantType.textContent = row[5] || '-'; 
-                        tdParticipantType.setAttribute('data-label', 'ผู้ร่วมแข่งขัน');
-                        tr.appendChild(tdParticipantType);
-
-                        const tdAction = document.createElement('td');
-                        tdAction.className = 'action-cell';
-                        tdAction.setAttribute('data-label', 'ดาวน์โหลด');
-
-                        const btnGroup = document.createElement('div');
-                        btnGroup.className = 'btn-group'; 
-                        btnGroup.setAttribute('role', 'group');
-
-                        const downloadBtn = document.createElement('button');
-                        downloadBtn.textContent = 'ดาวน์โหลดเกียรติบัตร';
-                        downloadBtn.className = 'btn btn-secondary-custom btn-sm download-btn';
-                        downloadBtn.dataset.name = row[0] || '';
-                        downloadBtn.dataset.activity = row[1] || ''; 
-                        downloadBtn.dataset.date = row[2] || '';     
-                        downloadBtn.dataset.awardLevel = row[3] || ''; 
-                        downloadBtn.dataset.classLevel = row[4] || ''; 
-                        downloadBtn.dataset.participantType = row[5] || ''; 
-                        downloadBtn.addEventListener('click', downloadIndividualCertificate);
-                        btnGroup.appendChild(downloadBtn);
-
-                        tdAction.appendChild(btnGroup);
-                        tr.appendChild(tdAction);
-
-                        tbody.appendChild(tr);
-                    });
-                    table.appendChild(tbody);
-                    tableResponsiveDiv.appendChild(table);
-                    levelCard.appendChild(tableResponsiveDiv);
-                    dataTableSection.appendChild(levelCard); 
-                }
-            });
-
-            // Render a separate table for Team Supervisors if data exists
-            if (supervisorData.length > 0) {
-                hasContentToDisplay = true;
-                const supervisorCard = document.createElement('div');
-                supervisorCard.className = 'card p-4 shadow-sm mb-4 mt-5'; 
-
-                const supervisorTitle = document.createElement('h3');
-                supervisorTitle.className = 'h6 mb-3 text-primary text-center';
-                supervisorTitle.textContent = `ผู้คุมทีม`; 
-                supervisorCard.appendChild(supervisorTitle);
-
-                const tableResponsiveDiv = document.createElement('div');
-                tableResponsiveDiv.className = 'table-responsive rounded shadow-sm';
-
-                const table = document.createElement('table');
-                table.className = 'table table-striped table-hover mb-0';
-
-                const thead = document.createElement('thead');
-                thead.innerHTML = `
-                    <tr>
-                        <th>ระดับรางวัล</th> 
-                        <th>ชื่อ-นามสกุล</th>
-                        <th>ผู้ร่วมแข่งขัน</th> 
-                        <th class="action-cell">ดาวน์โหลด</th> 
-                    </tr>
-                `;
-                table.appendChild(thead);
-
-                const tbody = document.createElement('tbody');
-                // Sort supervisor data by award level as well
-                supervisorData.sort((a, b) => {
-                    const awardA = a[3] || 'ไม่ระบุระดับรางวัล';
-                    const awardB = b[3] || 'ไม่ระบุระดับรางวัล';
-                    return (awardLevelOrder[awardA] || 100) - (awardLevelOrder[awardB] || 100);
-                });
-
-                supervisorData.forEach((row, index) => {
-                    const tr = document.createElement('tr');
-
-                    const tdAwardLevel = document.createElement('td');
-                    tdAwardLevel.textContent = row[3] || '-'; 
-                    tdAwardLevel.setAttribute('data-label', 'ระดับรางวัล');
-                    tr.appendChild(tdAwardLevel);
-
-                    const tdName = document.createElement('td');
-                    tdName.textContent = row[0] || '-'; 
-                    tdName.setAttribute('data-label', 'ชื่อ-นามสกุล');
-                    tr.appendChild(tdName);
-
-                    const tdParticipantType = document.createElement('td');
-                    tdParticipantType.textContent = row[5] || '-'; 
-                    tdParticipantType.setAttribute('data-label', 'ผู้ร่วมแข่งขัน');
-                    tr.appendChild(tdParticipantType);
-
-                    const tdAction = document.createElement('td');
-                    tdAction.className = 'action-cell';
-                    tdAction.setAttribute('data-label', 'ดาวน์โหลด');
-
-                    const btnGroup = document.createElement('div');
-                    btnGroup.className = 'btn-group'; 
-                    btnGroup.setAttribute('role', 'group');
-
-                    const downloadBtn = document.createElement('button');
-                    downloadBtn.textContent = 'ดาวน์โหลดเกียรติบัตร';
-                    downloadBtn.className = 'btn btn-secondary-custom btn-sm download-btn';
-                    downloadBtn.dataset.name = row[0] || '';
-                    downloadBtn.dataset.activity = row[1] || ''; 
-                    downloadBtn.dataset.date = row[2] || '';     
-                    downloadBtn.dataset.awardLevel = row[3] || ''; 
-                    downloadBtn.dataset.classLevel = row[4] || ''; 
-                    downloadBtn.dataset.participantType = row[5] || ''; 
-                    downloadBtn.addEventListener('click', downloadIndividualCertificate);
-                    btnGroup.appendChild(downloadBtn);
-
-                    tdAction.appendChild(btnGroup);
-                    tr.appendChild(tdAction);
-
-                    tbody.appendChild(tr);
-                });
-                table.appendChild(tbody);
-                tableResponsiveDiv.appendChild(table);
-                supervisorCard.appendChild(tableResponsiveDiv);
-                dataTableSection.appendChild(supervisorCard); 
-            }
-
-            // Render a separate table for Participation if data exists
-            if (participationData.length > 0) {
-                hasContentToDisplay = true;
-                const participationCard = document.createElement('div');
-                participationCard.className = 'card p-4 shadow-sm mb-4 mt-5'; 
-
-                const participationTitle = document.createElement('h3');
-                participationTitle.className = 'h6 mb-3 text-primary text-center';
-                participationTitle.textContent = `ผู้เข้าร่วมกิจกรรม`; 
-                participationCard.appendChild(participationTitle);
-
-                const tableResponsiveDiv = document.createElement('div');
-                tableResponsiveDiv.className = 'table-responsive rounded shadow-sm';
-
-                const table = document.createElement('table');
-                table.className = 'table table-striped table-hover mb-0';
-
-                const thead = document.createElement('thead');
-                thead.innerHTML = `
-                    <tr>
-                        <th>ระดับรางวัล</th> 
-                        <th>ชื่อ-นามสกุล</th>
-                        <th>ผู้ร่วมแข่งขัน</th> 
-                        <th class="action-cell">ดาวน์โหลด</th> 
-                    </tr>
-                `;
-                table.appendChild(thead);
-
-                const tbody = document.createElement('tbody');
-                // Sort participation data by name or other criteria if desired
-                participationData.sort((a, b) => {
-                    const nameA = a[0] || ''; // Sort by Name (index 0)
-                    const nameB = b[0] || '';
-                    return nameA.localeCompare(nameB);
-                });
-
-                participationData.forEach((row, index) => {
-                    const tr = document.createElement('tr');
-
-                    const tdAwardLevel = document.createElement('td');
-                    tdAwardLevel.textContent = row[3] || '-'; 
-                    tdAwardLevel.setAttribute('data-label', 'ระดับรางวัล');
-                    tr.appendChild(tdAwardLevel);
-
-                    const tdName = document.createElement('td');
-                    tdName.textContent = row[0] || '-'; 
-                    tdName.setAttribute('data-label', 'ชื่อ-นามสกุล');
-                    tr.appendChild(tdName);
-
-                    const tdParticipantType = document.createElement('td');
-                    tdParticipantType.textContent = row[5] || '-'; 
-                    tdParticipantType.setAttribute('data-label', 'ผู้ร่วมแข่งขัน');
-                    tr.appendChild(tdParticipantType);
-
-                    const tdAction = document.createElement('td');
-                    tdAction.className = 'action-cell';
-                    tdAction.setAttribute('data-label', 'ดาวน์โหลด');
-
-                    const btnGroup = document.createElement('div');
-                    btnGroup.className = 'btn-group'; 
-                    btnGroup.setAttribute('role', 'group');
-
-                    const downloadBtn = document.createElement('button');
-                    downloadBtn.textContent = 'ดาวน์โหลดเกียรติบัตร';
-                    downloadBtn.className = 'btn btn-secondary-custom btn-sm download-btn';
-                    downloadBtn.dataset.name = row[0] || '';
-                    downloadBtn.dataset.activity = row[1] || ''; 
-                    downloadBtn.dataset.date = row[2] || '';     
-                    downloadBtn.dataset.awardLevel = row[3] || ''; 
-                    downloadBtn.dataset.classLevel = row[4] || ''; 
-                    downloadBtn.dataset.participantType = row[5] || ''; 
-                    downloadBtn.addEventListener('click', downloadIndividualCertificate);
-                    btnGroup.appendChild(downloadBtn);
-
-                    tdAction.appendChild(btnGroup);
-                    tr.appendChild(tdAction);
-
-                    tbody.appendChild(tr);
-                });
-                table.appendChild(tbody);
-                tableResponsiveDiv.appendChild(table);
-                participationCard.appendChild(tableResponsiveDiv);
-                dataTableSection.appendChild(participationCard); 
-            }
-
-            // If no content was rendered, show the "no data" message
-            if (!hasContentToDisplay) {
-                const noDataMessage = document.createElement('div');
-                noDataMessage.className = 'text-center text-muted py-4';
-                noDataMessage.textContent = 'ไม่พบผลการแข่งขันที่สามารถแสดงได้ในรายการแข่งนี้';
-                dataTableSection.appendChild(noDataMessage);
-            }
+        } else {
+            thead.innerHTML = `
+                        <tr>
+                            <th>ระดับรางวัล</th>
+                            <th>ชื่อ-นามสกุล</th>
+                            <th>ผู้ร่วมแข่งขัน</th>
+                            <th class="action-cell">ดาวน์โหลด</th>
+                        </tr>
+                    `;
         }
+        table.appendChild(thead);
 
-        /**
-         * Populates the hidden certificate template and triggers PDF download.
-         * This function is called when an individual download button is clicked.
-         * @param {Event} event The click event object.
-         */
-        async function downloadIndividualCertificate(event) {
-            const button = event.target;
-            const originalBtnText = button.textContent;
-            button.textContent = 'กำลังสร้าง...';
-            button.disabled = true;
-
-            // ดึงข้อมูลจาก dataset ของปุ่ม
-            const name = button.dataset.name;
-            const activity = button.dataset.activity;
-            const date = button.dataset.date; 
-            const awardLevel = button.dataset.awardLevel; 
-            const classLevel = button.dataset.classLevel;
-
-            // ใส่ข้อมูลลงใน template ที่ซ่อนอยู่
-            certName.textContent = name || '{{ชื่อ-นามสกุล}}';
-            certActivity.textContent = classLevel || '{{ระดับรางวัล}}';
-            // certDate.textContent = date || '{{วันที่}}'; 
-            certAwardLevel.textContent =  `ได้รับรางวัล `+ awardLevel+ ' ' + activity || '{{ชื่อกิจกรรม}}'; 
-
-            try {
-                // ใช้ html2canvas เพื่อแปลง template เป็นรูปภาพ
-                const canvas = await html2canvas(certificateTemplate, {
-                    scale: 3, 
-                    useCORS: true, 
-                    logging: false 
-                });
-
-                // ดึงข้อมูลรูปภาพ
-                const imgData = canvas.toDataURL('image/png');
-
-                // สร้างเอกสาร PDF (A4 แนวนอน)
-                const pdf = new window.jspdf.jsPDF('landscape', 'mm', 'a4');
-
-                // คำนวณขนาดรูปภาพให้พอดีกับหน้า PDF
-                const imgWidth = pdf.internal.pageSize.getWidth();
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-                // เพิ่มรูปภาพลงใน PDF
-                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-
-                // บันทึกไฟล์ PDF
-                const fileName = `เกียรติบัตร_${name || 'ผู้รับ'}_${awardLevel || ''}.pdf`;
-                pdf.save(fileName);
-
-            } catch (error) {
-                console.error("Error generating PDF:", error);
-                alert("เกิดข้อผิดพลาดในการสร้าง PDF สำหรับ " + name + ": " + error.message);
-            } finally {
-                // คืนค่าปุ่ม
-                button.textContent = originalBtnText;
-                button.disabled = false;
-            }
-        }
-
-        // Event Listeners
-        competitionSelect.addEventListener('change', (event) => {
-            const selectedSheetName = event.target.value;
-            fetchSheetData(selectedSheetName);
+        const tbody = document.createElement('tbody');
+        // Sort supervisor data by award level as well
+        supervisorData.sort((a, b) => {
+            const awardA = a[3] || 'ไม่ระบุระดับรางวัล';
+            const awardB = b[3] || 'ไม่ระบุระดับรางวัล';
+            return (awardLevelOrder[awardA] || 100) - (awardLevelOrder[awardB] || 100);
         });
 
-        // Initial setup - Load competition list automatically on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            // Clear placeholders in hidden template on load
-            certName.textContent = '';
-            certActivity.textContent = '';
-            // certDate.textContent = ''; 
-            certAwardLevel.textContent = '';
-            
-            // Set initial message for the table section
-            dataTableSection.innerHTML = '<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน</h2><div class="text-center text-muted py-4">กรุณาเลือกรายการแข่ง</div>';
-            dataTableSection.classList.add('d-none'); // Ensure table section is hidden initially
-            
-            // Automatically load the list of competitions (sheet names)
-            loadCompetitionList();
+        supervisorData.forEach((row, index) => {
+            const tr = document.createElement('tr');
+
+            const tdAwardLevel = document.createElement('td');
+            tdAwardLevel.textContent = row[3] || '-';
+            tdAwardLevel.setAttribute('data-label', 'ระดับรางวัล');
+            tr.appendChild(tdAwardLevel);
+
+            if (isScienceDrawingCompetition) {
+                const tdLevel = document.createElement('td');
+                tdLevel.textContent = row[6] || '-';
+                tdLevel.setAttribute('data-label', 'ระดับ');
+                tr.appendChild(tdLevel);
+
+                const tdScore = document.createElement('td');
+                tdScore.textContent = row[7] || '-'; // Assuming score is at index 6
+                tdScore.setAttribute('data-label', 'คะแนน');
+                tr.appendChild(tdScore);
+            }
+
+            const tdName = document.createElement('td');
+            tdName.textContent = row[0] || '-';
+            tdName.setAttribute('data-label', 'ชื่อ-นามสกุล');
+            tr.appendChild(tdName);
+
+            const tdParticipantType = document.createElement('td');
+            tdParticipantType.textContent = row[5] || '-';
+            tdParticipantType.setAttribute('data-label', 'ผู้ร่วมแข่งขัน');
+            tr.appendChild(tdParticipantType);
+
+            const tdAction = document.createElement('td');
+            tdAction.className = 'action-cell';
+            tdAction.setAttribute('data-label', 'ดาวน์โหลด');
+
+            const btnGroup = document.createElement('div');
+            btnGroup.className = 'btn-group';
+            btnGroup.setAttribute('role', 'group');
+
+            const downloadBtn = document.createElement('button');
+            downloadBtn.textContent = 'ดาวน์โหลดเกียรติบัตร';
+            downloadBtn.className = 'btn btn-secondary-custom btn-sm download-btn';
+            downloadBtn.dataset.name = row[0] || '';
+            downloadBtn.dataset.activity = row[1] || '';
+            downloadBtn.dataset.date = row[2] || '';
+            downloadBtn.dataset.awardLevel = row[3] || '';
+            downloadBtn.dataset.classLevel = row[4] || '';
+            downloadBtn.dataset.participantType = row[5] || '';
+            if (isScienceDrawingCompetition) {
+                downloadBtn.dataset.tdLevel = row[6] || '';
+            }
+            downloadBtn.addEventListener('click', downloadIndividualCertificate);
+            btnGroup.appendChild(downloadBtn);
+
+            tdAction.appendChild(btnGroup);
+            tr.appendChild(tdAction);
+
+            tbody.appendChild(tr);
         });
-    </script>
+        table.appendChild(tbody);
+        tableResponsiveDiv.appendChild(table);
+        supervisorCard.appendChild(tableResponsiveDiv);
+        dataTableSection.appendChild(supervisorCard);
+    }
+
+    // Render a separate table for Participation if data exists
+    if (participationData.length > 0) {
+        hasContentToDisplay = true;
+        const participationCard = document.createElement('div');
+        participationCard.className = 'card p-4 shadow-sm mb-4 mt-5';
+
+        const participationTitle = document.createElement('h3');
+        participationTitle.className = 'h6 mb-3 text-primary text-center';
+        participationTitle.textContent = `ผู้เข้าร่วมกิจกรรม`;
+        participationCard.appendChild(participationTitle);
+
+        const tableResponsiveDiv = document.createElement('div');
+        tableResponsiveDiv.className = 'table-responsive rounded shadow-sm';
+
+        const table = document.createElement('table');
+        table.className = 'table table-striped table-hover mb-0';
+
+        const thead = document.createElement('thead');
+        if (isScienceDrawingCompetition) {
+            thead.innerHTML = `
+                        <tr>
+                            <th>ระดับรางวัล</th>
+                            <th>ระดับ</th>
+                            <th>คะแนน</th>
+                            <th>ชื่อ-นามสกุล</th>
+                            <th>ผู้ร่วมแข่งขัน</th>
+                            <th class="action-cell">ดาวน์โหลด</th>
+                        </tr>
+                    `;
+        } else {
+            thead.innerHTML = `
+                        <tr>
+                            <th>ระดับรางวัล</th>
+                            <th>ชื่อ-นามสกุล</th>
+                            <th>ผู้ร่วมแข่งขัน</th>
+                            <th class="action-cell">ดาวน์โหลด</th>
+                        </tr>
+                    `;
+        }
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        // Sort participation data by name or other criteria if desired
+        participationData.sort((a, b) => {
+            const nameA = a[0] || ''; // Sort by Name (index 0)
+            const nameB = b[0] || '';
+            return nameA.localeCompare(nameB);
+        });
+
+        participationData.forEach((row, index) => {
+            const tr = document.createElement('tr');
+
+            const tdAwardLevel = document.createElement('td');
+            tdAwardLevel.textContent = row[3] || '-';
+            tdAwardLevel.setAttribute('data-label', 'ระดับรางวัล');
+            tr.appendChild(tdAwardLevel);
+
+            if (isScienceDrawingCompetition) {
+                const tdLevel = document.createElement('td');
+                tdLevel.textContent = row[6] || '-';
+                tdLevel.setAttribute('data-label', 'ระดับ');
+                tr.appendChild(tdLevel);
+
+                const tdScore = document.createElement('td');
+                tdScore.textContent = row[7] || '-'; // Assuming score is at index 6
+                tdScore.setAttribute('data-label', 'คะแนน');
+                tr.appendChild(tdScore);
+            }
+
+            const tdName = document.createElement('td');
+            tdName.textContent = row[0] || '-';
+            tdName.setAttribute('data-label', 'ชื่อ-นามสกุล');
+            tr.appendChild(tdName);
+
+            const tdParticipantType = document.createElement('td');
+            tdParticipantType.textContent = row[5] || '-';
+            tdParticipantType.setAttribute('data-label', 'ผู้ร่วมแข่งขัน');
+            tr.appendChild(tdParticipantType);
+
+            const tdAction = document.createElement('td');
+            tdAction.className = 'action-cell';
+            tdAction.setAttribute('data-label', 'ดาวน์โหลด');
+
+            const btnGroup = document.createElement('div');
+            btnGroup.className = 'btn-group';
+            btnGroup.setAttribute('role', 'group');
+
+            const downloadBtn = document.createElement('button');
+            downloadBtn.textContent = 'ดาวน์โหลดเกียรติบัตร';
+            downloadBtn.className = 'btn btn-secondary-custom btn-sm download-btn';
+            downloadBtn.dataset.name = row[0] || '';
+            downloadBtn.dataset.activity = row[1] || '';
+            downloadBtn.dataset.date = row[2] || '';
+            downloadBtn.dataset.awardLevel = row[3] || '';
+            downloadBtn.dataset.classLevel = row[4] || '';
+            downloadBtn.dataset.participantType = row[5] || '';
+            if (isScienceDrawingCompetition) {
+                downloadBtn.dataset.tdLevel = row[6] || '';
+            }
+            downloadBtn.addEventListener('click', downloadIndividualCertificate);
+            btnGroup.appendChild(downloadBtn);
+
+            tdAction.appendChild(btnGroup);
+            tr.appendChild(tdAction);
+
+            tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        tableResponsiveDiv.appendChild(table);
+        participationCard.appendChild(tableResponsiveDiv);
+        dataTableSection.appendChild(participationCard);
+    }
+
+    // If no content was rendered, show the "no data" message
+    if (!hasContentToDisplay) {
+        const noDataMessage = document.createElement('div');
+        noDataMessage.className = 'text-center text-muted py-4';
+        noDataMessage.textContent = 'ไม่พบผลการแข่งขันที่สามารถแสดงได้ในรายการแข่งนี้';
+        dataTableSection.appendChild(noDataMessage);
+    }
+}
+
+/**
+ * Populates the hidden certificate template and triggers PDF download.
+ * This function is called when an individual download button is clicked.
+ * @param {Event} event The click event object.
+ */
+async function downloadIndividualCertificate(event) {
+    const button = event.target;
+    const originalBtnText = button.textContent;
+    button.textContent = 'กำลังสร้าง...';
+    button.disabled = true;
+
+    // ดึงข้อมูลจาก dataset ของปุ่ม
+    const name = button.dataset.name;
+    const activity = button.dataset.activity;
+    const date = button.dataset.date;
+    const awardLevel = button.dataset.awardLevel;
+    const classLevel = button.dataset.classLevel;
+    const tdLevel = button.dataset.tdLevel;
+    const participantType = button.dataset.participantType;
+
+
+    // ใส่ข้อมูลลงใน template ที่ซ่อนอยู่
+    certName.textContent = name || '{{ชื่อ-นามสกุล}}';
+    certActivity.textContent = activity || '{{ชื่อกิจกรรม}}';
+    certDate.textContent = classLevel || '{{วันที่}}';
+    if (participantType == "ผู้คุมทีม") {
+        certAwardLevel.textContent = participantType +' '+ ` ได้รับรางวัลระดับ`+ tdLevel;
+    } else {
+        if (tdLevel) {
+            certAwardLevel.textContent = `ได้รับรางวัล ` + awardLevel + ' ระดับ' + tdLevel;
+        } else {
+            certAwardLevel.textContent = `ได้รับรางวัล ` + awardLevel;
+        }
+
+    }
+
+
+
+    try {
+        // ใช้ html2canvas เพื่อแปลง template เป็นรูปภาพ
+        const canvas = await html2canvas(certificateTemplate, {
+            scale: 3,
+            useCORS: true,
+            logging: false
+        });
+
+        // ดึงข้อมูลรูปภาพ
+        const imgData = canvas.toDataURL('image/png');
+
+        // สร้างเอกสาร PDF (A4 แนวนอน)
+        const pdf = new window.jspdf.jsPDF('landscape', 'mm', 'a4');
+
+        // คำนวณขนาดรูปภาพให้พอดีกับหน้า PDF
+        const imgWidth = pdf.internal.pageSize.getWidth();
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        // เพิ่มรูปภาพลงใน PDF
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+        // บันทึกไฟล์ PDF
+        const fileName = `เกียรติบัตร_${name || 'ผู้รับ'}_${awardLevel || ''}.pdf`;
+        pdf.save(fileName);
+
+    } catch (error) {
+        console.error("Error generating PDF:", error);
+        alert("เกิดข้อผิดพลาดในการสร้าง PDF สำหรับ " + name + ": " + error.message);
+    } finally {
+        // คืนค่าปุ่ม
+        button.textContent = originalBtnText;
+        button.disabled = false;
+    }
+}
+
+// Event Listeners
+competitionSelect.addEventListener('change', (event) => {
+    const selectedSheetName = event.target.value;
+    fetchSheetData(selectedSheetName);
+});
+
+// Initial setup - Load competition list automatically on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Clear placeholders in hidden template on load
+    certName.textContent = '';
+    certActivity.textContent = '';
+    certDate.textContent = '';
+    certAwardLevel.textContent = '';
+
+    // Set initial message for the table section
+    dataTableSection.innerHTML =
+        '<h2 class="h5 mb-3 text-secondary text-center">ผลการแข่งขัน</h2><div class="text-center text-muted py-4">กรุณาเลือกรายการแข่ง</div>';
+    dataTableSection.classList.add('d-none'); // Ensure table section is hidden initially
+
+    // Automatically load the list of competitions (sheet names)
+    loadCompetitionList();
+});
+</script>
 <?= $this->endSection() ?>

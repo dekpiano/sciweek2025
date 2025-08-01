@@ -156,6 +156,7 @@
                                     class="dropdown-item">หนังสือเปลี่ยนตัวผู้แข่งขัน</a>
                             </div>
                         </div>
+                        <!-- <a onClick="showAlert()" class="nav-item nav-link">ผลการแข่งขัน</a> -->
                         <a href="<?=base_url('Register/Certificate')?>" class="nav-item nav-link">ผลการแข่งขัน</a>
                         <a href="<?=base_url('Register/ListNameTeams')?>"
                             class="nav-item nav-link">รายชื่อทีมสมัครแข่งขัน</a>
@@ -250,6 +251,60 @@
     <script src="<?=base_url()?>public/js/main.js"></script>
 
     <?= $this->renderSection('script') ?>
+
+    <script>
+         // ข้อความที่คุณต้องการแสดงใน Pop-up
+        const notificationMessage = `
+            <div style="text-align: center; font-size: 1.1em; line-height: 1.6;">
+                <p style="font-weight: bold; color: #e74c3c; margin-bottom: 10px;">ขยายเวลาสมัคร!</p>
+                <p>ตั้งเเต่บัดนี้ - <span style="font-weight: bold; color: #3498db;">31 ก.ค. 68 เวลา 12.00 น.</span></p>
+                <p>ในรายการเเข่งขัน <span style="font-weight: bold; color: #2ecc71;">Science Cover Dance</span> เเละ <span style="font-weight: bold; color: #f39c12;">จรวดขวดน้ำ</span></p>
+                <p style="font-size: 0.9em; color: #7f8c8d; margin-top: 15px;">(ปิดรับสมัครทันที เมื่อครบจำนวนทีมที่กำหนด)</p>
+            </div>
+        `;
+
+        // ฟังก์ชันสำหรับแสดง Pop-up
+        function showNotificationPopup() {
+            Swal.fire({
+                title: 'ประกาศสำคัญ!', // หัวข้อ Pop-up
+                html: notificationMessage, // เนื้อหา Pop-up (รองรับ HTML)
+                icon: 'info', // ไอคอน (info, success, error, warning, question)
+                confirmButtonText: 'รับทราบ', // ข้อความบนปุ่มยืนยัน
+                confirmButtonColor: '#3085d6', // สีปุ่มยืนยัน
+                allowOutsideClick: false, // ไม่อนุญาตให้คลิกนอก Pop-up เพื่อปิด
+                allowEscapeKey: false, // ไม่อนุญาตให้กด Esc เพื่อปิด
+                customClass: {
+                    popup: 'rounded-lg shadow-xl', // เพิ่มคลาส Tailwind ให้กับ Pop-up
+                    title: 'text-2xl font-bold text-gray-800',
+                    htmlContainer: 'text-gray-700',
+                    confirmButton: 'px-6 py-3 text-lg'
+                }
+            });
+        }
+
+           // เมื่อ DOM โหลดเสร็จสมบูรณ์
+        document.addEventListener('DOMContentLoaded', function() {
+            // กำหนดคีย์สำหรับ sessionStorage
+            const popupShownKey = 'hasPopupBeenShown';
+
+            // ตรวจสอบว่า popup เคยแสดงในเซสชันนี้แล้วหรือยัง
+            // sessionStorage จะเก็บข้อมูลไว้ตราบเท่าที่แท็บ/หน้าต่างเบราว์เซอร์ยังเปิดอยู่
+            // ดังนั้น Pop-up จะแสดงเพียงครั้งเดียวต่อการเปิดแท็บ/หน้าต่างใหม่เท่านั้น
+            // ไม่ว่าจะรีเฟรชหน้า หรือนำทางไปหน้าอื่นในโดเมนเดียวกันแล้วกลับมา
+            if (!sessionStorage.getItem(popupShownKey)) {
+                // ถ้ายังไม่เคยแสดง ให้แสดง popup
+                //showNotificationPopup();
+                // และตั้งค่าใน sessionStorage ว่าได้แสดงไปแล้ว
+                sessionStorage.setItem(popupShownKey, 'true');
+            }
+
+            // คุณยังคงสามารถใช้ปุ่มเพื่อเปิด Pop-up ด้วยก็ได้ (จะแสดงทุกครั้งที่กด)
+            const showPopupBtn = document.getElementById('showPopupBtn');
+            if (showPopupBtn) {
+                showPopupBtn.addEventListener('click', showNotificationPopup);
+            }
+        });
+    </script>
 </body>
 
 </html>
